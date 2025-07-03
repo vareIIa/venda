@@ -33,8 +33,8 @@ function Counters() {
             <DefaultCounterCard
               count={70}
               suffix="+"
-              title="Coded Elements"
-              description="From buttons, to inputs, navbars, alerts or cards, you are covered"
+              title="Eventos feitos"
+              description="Pedro faz eventos desde 2010, e já fez mais de 70 eventos"
             />
           </Grid>
           <Grid item xs={12} md={4} display="flex">
@@ -42,16 +42,16 @@ function Counters() {
             <DefaultCounterCard
               count={15}
               suffix="+"
-              title="Design Blocks"
-              description="Mix the sections, change the colors and unleash your creativity"
+              title="Premios ganhos"
+              description="Uma carreira de sucesso, com mais de 15 prêmios ganhos"
             />
             <Divider orientation="vertical" sx={{ display: { xs: "none", md: "block" }, ml: 0 }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <DefaultCounterCard
-              count={4}
-              title="Pages"
-              description="Save 3-4 weeks of work when you use our pre-made pages for your website"
+              count={20}
+              title="Anos de experiência"
+              description="Pedro tem mais de 20 anos de experiência no mercado de eventos"
             />
           </Grid>
         </Grid>
