@@ -8,7 +8,7 @@
 
 Coded by www.creative-tim.com
 
- =========================================================
+=========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
@@ -33,364 +33,424 @@ import bgBack from "assets/images/rotating-card-bg-back.jpeg";
 
 function Information() {
   return (
-    <MKBox component="section" py={6} my={6}>
+    <MKBox component="section" py={8} my={8}>
       <Container>
-        <Grid container spacing={3} direction="column" sx={{ mx: "auto" }}>
-          {/* Evento 1: Festa Junina */}
+        {/* Hero Section */}
+        <Grid container spacing={3} sx={{ mb: 8, textAlign: "center" }}>
           <Grid item xs={12}>
+            <MKTypography
+              variant="h2"
+              fontWeight="bold"
+              sx={{
+                fontFamily: "'Poppins', sans-serif",
+                color: "info.main",
+                mb: 2,
+                fontSize: { xs: "1.8rem", md: "2rem" },
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out forwards",
+                "@keyframes fadeIn": {
+                  "0%": { opacity: 0, transform: "translateY(20px)" },
+                  "100%": { opacity: 1, transform: "translateY(0)" },
+                },
+              }}
+            >
+              Sua Nova Forma de Preparação Física do Futsal Começa Aqui
+            </MKTypography>
+            <MKTypography
+              variant="body2"
+              color="text"
+              sx={{
+                fontSize: "1rem",
+                lineHeight: 1.7,
+                maxWidth: "800px",
+                mx: "auto",
+                mb: 3,
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 0.2s forwards",
+              }}
+            >
+              Participe de um workshop presencial exclusivo com{" "}
+              <span
+                style={{
+                  backgroundColor: "#ffca28",
+                  color: "#1a237e",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  fontFamily: "'Poppins', sans-serif",
+                  fontWeight: 600,
+                }}
+              >
+                Michel Petri Dalapria
+              </span>
+              , preparador físico da <strong>Seleção Brasileira</strong>, e domine as técnicas mais
+              atuais de força e potência aplicadas ao alto rendimento no futsal.
+            </MKTypography>
+            <MKTypography
+              variant="body2"
+              color="error"
+              sx={{
+                mt: 2,
+                fontWeight: "bold",
+                fontSize: "1rem",
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 0.4s forwards",
+              }}
+            >
+              Vagas limitadas. Evento presencial em BH.
+            </MKTypography>
+          </Grid>
+        </Grid>
+
+        {/* Event Card */}
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} md={10}>
             <MKBox
               borderRadius="xl"
-              shadow="lg"
-              p={3}
+              p={4}
               sx={{
+                background: "linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)",
+                boxShadow: ({ boxShadows: { lg } }) => lg,
                 border: "1px solid",
-                borderColor: "grey.300",
-                backgroundColor: "white",
-                mb: 3,
+                borderColor: "grey.200",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                "&:hover": {
+                  transform: "scale(1.02)",
+                  boxShadow: ({ boxShadows: { xl } }) => xl,
+                },
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 0.6s forwards",
               }}
             >
               <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={5}>
                   <RotatingCard>
                     <RotatingCardFront
                       image={bgFront}
-                      icon="touch_app"
-                      title={
+                      icon="sports_soccer"
+                      title="Workshop de Futsal"
+                      description={
                         <>
-                          Evento
-                          <br />
-                          Festa Junina
+                          Domine as técnicas de força e potência com o preparador físico da{" "}
+                          <strong>Seleção Brasileira</strong>.
                         </>
                       }
-                      description={
-                        "A venda de ingressos para o evento Festa Junina do Vianna é feita de " +
-                        "forma rápida e segura, garantindo a melhor experiência para os " +
-                        "participantes."
-                      }
                     />
                     <RotatingCardBack
                       image={bgBack}
-                      title="Se dizerem que é só uma festa junina, não conhecem o Vianna!"
-                      description={
-                        "A Festa Junina do Vianna é um evento tradicional que reúne música, " +
-                        "dança, comidas típicas e muita diversão. É uma oportunidade única de " +
-                        "vivenciar a cultura nordestina em um ambiente acolhedor e animado."
-                      }
+                      title="Eleve Sua Carreira no Futsal!"
+                      description="Uma experiência prática com Michel Petri Dalapria para transformar sua abordagem ao treino físico."
                       action={{
                         type: "internal",
                         route: "/sections/page-sections/page-headers",
-                        label: "COMPRE AQUI",
+                        label: "GARANTIR VAGA",
                       }}
                     />
                   </RotatingCard>
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={7}>
                   <MKBox>
-                    <MKTypography variant="h4" mb={1}>
-                      Festa Junina do Vianna
+                    <MKTypography
+                      variant="h3"
+                      fontWeight="bold"
+                      sx={{
+                        fontFamily: "'Poppins', sans-serif",
+                        mb: 2,
+                        fontSize: { xs: "1.3rem", md: "1.5rem" },
+                      }}
+                    >
+                      Workshop de Preparação Física no Futsal
                     </MKTypography>
-                    <MKTypography variant="body2" color="text" mb={2}>
-                      A Festa Junina do Vianna é um evento tradicional que reúne música, dança,
-                      comidas típicas e muita diversão. É uma oportunidade única de vivenciar a
-                      cultura nordestina em um ambiente acolhedor e animado. Venha com sua melhor
-                      roupa caipira e aproveite as quadrilhas, barraquinhas e shows ao vivo!
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" fontWeight="bold">
-                      Data: 15 de Julho de 2025, 18:00
+                    <MKTypography
+                      variant="body2"
+                      color="text"
+                      sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+                    >
+                      Uma oportunidade única para aprender com{" "}
+                      <span
+                        style={{
+                          backgroundColor: "#ffca28",
+                          color: "#1a237e",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          fontFamily: "'Poppins', sans-serif",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Michel Petri Dalapria
+                      </span>{" "}
+                      e aplicar técnicas de elite no seu trabalho. Vagas limitadas para garantir uma
+                      experiência prática e personalizada.
                     </MKTypography>
                     <MKButton
                       variant="gradient"
                       color="primary"
                       size="large"
-                      sx={{ mt: 3 }}
                       component="a"
                       href="/sections/page-sections/page-headers"
+                      sx={{
+                        fontFamily: "'Poppins', sans-serif",
+                        px: 4,
+                        py: 1.5,
+                        fontSize: "1rem",
+                        transition: "transform 0.3s, background-color 0.3s",
+                        "&:hover": {
+                          transform: "scale(1.05)",
+                          backgroundColor: "primary.dark",
+                        },
+                      }}
                     >
-                      Comprar Ingresso
+                      Garantir Minha Vaga
                     </MKButton>
                   </MKBox>
                 </Grid>
               </Grid>
             </MKBox>
           </Grid>
+        </Grid>
 
-          {/* Evento 2: Noite Cultural */}
+        {/* Detailed Sections */}
+        <Grid container spacing={4} sx={{ mt: 8 }}>
+          {/* O Desafio */}
           <Grid item xs={12}>
             <MKBox
-              borderRadius="xl"
-              shadow="lg"
-              p={3}
               sx={{
-                border: "1px solid",
-                borderColor: "grey.300",
-                backgroundColor: "white",
-                mb: 3,
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 0.8s forwards",
               }}
             >
-              <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={4}>
-                  <RotatingCard>
-                    <RotatingCardFront
-                      image={bgFront}
-                      icon="festival"
-                      title="Noite Cultural"
-                      description={
-                        "Uma noite inesquecível com apresentações de teatro, música ao vivo e " +
-                        "exposições de arte local."
-                      }
-                    />
-                    <RotatingCardBack
-                      image={bgBack}
-                      title="A cultura ganha vida na Noite Cultural!"
-                      description={
-                        "A Noite Cultural do Vianna celebra a diversidade artística com " +
-                        "performances vibrantes e exposições interativas. Venha se encantar " +
-                        "com a riqueza da nossa comunidade!"
-                      }
-                      action={{
-                        type: "internal",
-                        route: "/sections/page-sections/page-headers",
-                        label: "COMPRE AQUI",
-                      }}
-                    />
-                  </RotatingCard>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                  <MKBox>
-                    <MKTypography variant="h4" mb={1}>
-                      Noite Cultural
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" mb={2}>
-                      A Noite Cultural do Vianna é uma celebração da arte e da criatividade.
-                      Desfrute de apresentações teatrais emocionantes, concertos de música clássica
-                      e contemporânea, além de exposições de artistas locais. Um evento perfeito
-                      para quem aprecia cultura e quer se inspirar!
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" fontWeight="bold">
-                      Data: 20 de Agosto de 2025, 19:00
-                    </MKTypography>
-                    <MKButton
-                      variant="gradient"
-                      color="primary"
-                      size="large"
-                      sx={{ mt: 3 }}
-                      component="a"
-                      href="/sections/page-sections/page-headers"
-                    >
-                      Comprar Ingresso
-                    </MKButton>
-                  </MKBox>
-                </Grid>
-              </Grid>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                O Futsal Evoluiu. Sua Metodologia Acompanhou?
+              </MKTypography>
+              <MKTypography variant="body2" color="text" sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+                O jogo está mais intenso, mais físico e mais exigente. Hoje, o talento precisa estar
+                sustentado por força, velocidade e resistência. Profissionais que dominam essas
+                variáveis são cada vez mais valorizados — e cada detalhe da preparação pode definir
+                o resultado em quadra.
+                <br />
+                <br />
+                Este workshop é voltado a quem deseja se atualizar com o que há de mais eficaz e
+                aplicado à realidade competitiva do futsal moderno.
+              </MKTypography>
             </MKBox>
           </Grid>
 
-          {/* Evento 3: Festival de Rock */}
+          {/* O Especialista */}
           <Grid item xs={12}>
             <MKBox
-              borderRadius="xl"
-              shadow="lg"
-              p={3}
               sx={{
-                border: "1px solid",
-                borderColor: "grey.300",
-                backgroundColor: "white",
-                mb: 3,
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 1s forwards",
               }}
             >
-              <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={4}>
-                  <RotatingCard>
-                    <RotatingCardFront
-                      image={bgFront}
-                      icon="music_note"
-                      title="Festival de Rock"
-                      description={
-                        "Bandas independentes e muita energia em um evento que promete agitar " +
-                        "a cidade!"
-                      }
-                    />
-                    <RotatingCardBack
-                      image={bgBack}
-                      title="Sinta a vibração do Festival de Rock!"
-                      description={
-                        "O Festival de Rock do Vianna traz o melhor da cena indie com shows " +
-                        "eletrizantes e uma atmosfera única. Prepare-se para curtir a noite " +
-                        "toda!"
-                      }
-                      action={{
-                        type: "internal",
-                        route: "/sections/page-sections/page-headers",
-                        label: "COMPRE AQUI",
-                      }}
-                    />
-                  </RotatingCard>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                  <MKBox>
-                    <MKTypography variant="h4" mb={1}>
-                      Festival de Rock
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" mb={2}>
-                      O Festival de Rock do Vianna é o ponto de encontro dos amantes da música
-                      alternativa. Bandas independentes de todo o país se reúnem para uma noite de
-                      shows inesquecíveis, com muita energia e vibração. Traga sua energia e venha
-                      curtir!
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" fontWeight="bold">
-                      Data: 10 de Setembro de 2025, 20:00
-                    </MKTypography>
-                    <MKButton
-                      variant="gradient"
-                      color="primary"
-                      size="large"
-                      sx={{ mt: 3 }}
-                      component="a"
-                      href="/sections/page-sections/page-headers"
-                    >
-                      Comprar Ingresso
-                    </MKButton>
-                  </MKBox>
-                </Grid>
-              </Grid>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Aprenda com Quem Está no Topo da Performance Nacional
+              </MKTypography>
+              <MKTypography variant="body2" color="text" sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+                <span
+                  style={{
+                    backgroundColor: "#ffca28",
+                    color: "#1a237e",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: 600,
+                  }}
+                >
+                  Michel Petri Dalapria
+                </span>{" "}
+                é o atual preparador físico da <strong>Seleção Brasileira</strong> de Futsal, com
+                títulos internacionais e uma trajetória marcada pela excelência técnica e prática.
+                Sua vivência na elite do esporte, aliada à base construída no Joaçaba Futsal,
+                garante uma visão única entre teoria e aplicação real.
+                <br />
+                <br />
+                Neste evento, você terá acesso a conhecimentos antes restritos a equipes
+                profissionais — direto da fonte.
+              </MKTypography>
             </MKBox>
           </Grid>
 
-          {/* Evento 4: Feira Gastronômica */}
+          {/* O Conteúdo */}
           <Grid item xs={12}>
             <MKBox
-              borderRadius="xl"
-              shadow="lg"
-              p={3}
               sx={{
-                border: "1px solid",
-                borderColor: "grey.300",
-                backgroundColor: "white",
-                mb: 3,
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 1.2s forwards",
               }}
             >
-              <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={4}>
-                  <RotatingCard>
-                    <RotatingCardFront
-                      image={bgFront}
-                      icon="restaurant"
-                      title="Feira Gastronômica"
-                      description={
-                        "Sabores do mundo em um evento que reúne food trucks e chefs renomados."
-                      }
-                    />
-                    <RotatingCardBack
-                      image={bgBack}
-                      title="Descubra novos sabores na Feira Gastronômica!"
-                      description={
-                        "A Feira Gastronômica do Vianna é um convite para explorar culinárias " +
-                        "de diferentes culturas, com pratos exclusivos e uma experiência " +
-                        "sensorial inesquecível."
-                      }
-                      action={{
-                        type: "internal",
-                        route: "/sections/page-sections/page-headers",
-                        label: "COMPRE AQUI",
-                      }}
-                    />
-                  </RotatingCard>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                  <MKBox>
-                    <MKTypography variant="h4" mb={1}>
-                      Feira Gastronômica
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" mb={2}>
-                      A Feira Gastronômica do Vianna reúne os melhores food trucks e chefs renomados
-                      em um festival de sabores. De pratos exóticos a clássicos regionais, há algo
-                      para todos os paladares. Venha com fome e descubra novas delícias!
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" fontWeight="bold">
-                      Data: 25 de Outubro de 2025, 12:00
-                    </MKTypography>
-                    <MKButton
-                      variant="gradient"
-                      color="primary"
-                      size="large"
-                      sx={{ mt: 3 }}
-                      component="a"
-                      href="/sections/page-sections/page-headers"
-                    >
-                      Comprar Ingresso
-                    </MKButton>
-                  </MKBox>
-                </Grid>
-              </Grid>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Conhecimento Aplicado para Resultados Reais em Quadra
+              </MKTypography>
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+              >
+                Este não é mais um evento teórico. É uma experiência prática que vai transformar sua
+                abordagem. Você vai aprender a:
+              </MKTypography>
+              <MKBox component="ul" sx={{ pl: 3, fontSize: "1rem", lineHeight: 1.7 }}>
+                <li>
+                  Avaliar a força e a potência dos atletas com métodos objetivos e replicáveis.
+                </li>
+                <li>
+                  Estruturar a periodização do treino de força conforme o calendário competitivo.
+                </li>
+                <li>
+                  Implementar exercícios específicos para arrancadas, frenagens, chutes e saltos.
+                </li>
+                <li>Prevenir lesões com estratégias eficazes de fortalecimento.</li>
+                <li>Integrar o trabalho físico com o treino técnico e tático.</li>
+              </MKBox>
             </MKBox>
           </Grid>
 
-          {/* Evento 5: Maratona de Verão */}
+          {/* As Informações */}
           <Grid item xs={12}>
             <MKBox
-              borderRadius="xl"
-              shadow="lg"
-              p={3}
               sx={{
-                border: "1px solid",
-                borderColor: "grey.300",
-                backgroundColor: "white",
-                mb: 3,
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 1.4s forwards",
               }}
             >
-              <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={4}>
-                  <RotatingCard>
-                    <RotatingCardFront
-                      image={bgFront}
-                      icon="sports"
-                      title="Maratona de Verão"
-                      description={
-                        "Corra, celebre e viva a energia do esporte em nossa maratona anual!"
-                      }
-                    />
-                    <RotatingCardBack
-                      image={bgBack}
-                      title="Supere seus limites na Maratona de Verão!"
-                      description={
-                        "A Maratona de Verão do Vianna é mais do que uma corrida: é uma " +
-                        "celebração de saúde, superação e comunidade. Inscreva-se e faça parte!"
-                      }
-                      action={{
-                        type: "internal",
-                        route: "/sections/page-sections/page-headers",
-                        label: "COMPRE AQUI",
-                      }}
-                    />
-                  </RotatingCard>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                  <MKBox>
-                    <MKTypography variant="h4" mb={1}>
-                      Maratona de Verão
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" mb={2}>
-                      A Maratona de Verão do Vianna é o evento perfeito para corredores de todos os
-                      níveis. Com percursos de 5km, 10km e 21km, além de atividades para toda a
-                      família, é uma celebração de saúde e comunidade. Inscreva-se e venha superar
-                      seus limites!
-                    </MKTypography>
-                    <MKTypography variant="body2" color="text" fontWeight="bold">
-                      Data: 15 de Novembro de 2025, 07:00
-                    </MKTypography>
-                    <MKButton
-                      variant="gradient"
-                      color="primary"
-                      size="large"
-                      sx={{ mt: 3 }}
-                      component="a"
-                      href="/sections/page-sections/page-headers"
-                    >
-                      Comprar Ingresso
-                    </MKButton>
-                  </MKBox>
-                </Grid>
-              </Grid>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Evento Presencial em BH com Bônus Exclusivo
+              </MKTypography>
+              <MKBox sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>📍 Local:</strong> CT OMNI – Belo Horizonte, MG
+                </MKTypography>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>📅 Data:</strong> 27 de setembro de 2025
+                </MKTypography>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>🕗 Horário:</strong> Das 08h às 18h (com intervalo para almoço)
+                </MKTypography>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>🎟️ Vagas:</strong> Apenas 100 participantes, para garantir a qualidade da
+                  prática
+                </MKTypography>
+                <MKTypography
+                  variant="body2"
+                  sx={{ mt: 2, fontWeight: "bold", color: "success.main" }}
+                >
+                  Bônus Especial: Os 50 primeiros inscritos ganham um ingresso para assistir a uma
+                  partida oficial da LNF na Arena UniBH, logo após o evento.
+                </MKTypography>
+              </MKBox>
+            </MKBox>
+          </Grid>
+
+          {/* O Convite Final */}
+          <Grid item xs={12}>
+            <MKBox
+              sx={{
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 1.6s forwards",
+                textAlign: "center",
+              }}
+            >
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Para Quem Leva a Preparação Física a Sério
+              </MKTypography>
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+              >
+                Este workshop é ideal para:
+              </MKTypography>
+              <MKBox
+                component="ul"
+                sx={{
+                  pl: 3,
+                  fontSize: "1rem",
+                  lineHeight: 1.7,
+                  textAlign: "left",
+                  maxWidth: "600px",
+                  mx: "auto",
+                }}
+              >
+                <li>Preparadores físicos que buscam atualizações de alto nível.</li>
+                <li>Estudantes de Educação Física que querem se destacar no mercado.</li>
+                <li>
+                  Treinadores e entusiastas que desejam aprofundar seu domínio sobre a performance
+                  no futsal.
+                </li>
+              </MKBox>
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: "1rem", lineHeight: 1.7, mt: 2, mb: 3 }}
+              >
+                Se você está comprometido com o desenvolvimento dos seus atletas — e da sua carreira
+                —, este evento foi feito para você.
+              </MKTypography>
+              <MKButton
+                variant="gradient"
+                color="primary"
+                size="large"
+                component="a"
+                href="/sections/page-sections/page-headers"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  px: 4,
+                  py: 1.5,
+                  fontSize: "1rem",
+                  transition: "transform 0.3s, background-color 0.3s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    backgroundColor: "primary.dark",
+                  },
+                }}
+              >
+                Quero Minha Vaga e o Bônus!
+              </MKButton>
             </MKBox>
           </Grid>
         </Grid>

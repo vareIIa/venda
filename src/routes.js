@@ -28,17 +28,17 @@ const routes = [
     dropdown: true,
     collapse: [
       {
-        name: "about us",
-        route: "/pages/landing-pages/about-us",
+        name: "Suporte via Whatsapp",
+        route: "",
         component: <AboutUs />,
       },
       {
-        name: "contact us",
+        name: "Suporte via Instagram",
         route: "/pages/landing-pages/contact-us",
         component: <ContactUs />,
       },
       {
-        name: "author",
+        name: "Suporte Técnico",
         route: "/pages/landing-pages/author",
         component: <Author />,
       },
