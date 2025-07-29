@@ -4,7 +4,7 @@
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/material-kit-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim[](https://www.creative-tim.com)
 
 Coded by www.creative-tim.com
 
@@ -213,6 +213,7 @@ function Information() {
   // PIX configuration
   const pixKey = "11115977660"; // Client's CPF as PIX key
   const merchantName = "Pedro Jeha Vianna"; // Client's name, within 25-character limit
+  const merchantCity = "BELOHORIZONTE"; // Fixed to 13 characters, no space, uppercase
 
   // Calculate CRC16-CCITT
   const calculateCRC16 = (payload) => {
@@ -227,15 +228,19 @@ function Information() {
     return crc.toString(16).toUpperCase().padStart(4, "0");
   };
 
-  // Generate PIX payload (restored to working version with Mercado Pago CPF)
-  const generatePixPayload = (amount, pixKey, merchantName) => {
-    const formattedAmount = amount.toFixed(2).replace(".", ""); // e.g., 25.00 -> 2500
-    const gui = "BR.GOV.BCB.PIX";
-    const pixKeyField = `01${pixKey.length.toString().padStart(2, "0")}${pixKey}`; // CPF key
-    const merchantAccount = `0014${gui}${pixKeyField}`; // Standard PIX key structure
+  // Generate PIX payload (corrected for standard EMV BR Code format)
+  const generatePixPayload = (amount, pixKey, merchantName, merchantCity) => {
+    const formattedAmount = amount.toFixed(2); // e.g., "25.00"
+    const gui = "br.gov.bcb.pix";
+    const guiField = `00${gui.length.toString().padStart(2, "0")}${gui}`;
+    const pixKeyField = `01${pixKey.length.toString().padStart(2, "0")}${pixKey}`;
+    const merchantAccountContent = guiField + pixKeyField;
+    const merchantAccountLen = merchantAccountContent.length.toString().padStart(2, "0");
+    const merchantAccount = `26${merchantAccountLen}${merchantAccountContent}`;
     const merchantNameField = `59${merchantName.length.toString().padStart(2, "0")}${merchantName}`;
+    const merchantCityField = `60${merchantCity.length.toString().padStart(2, "0")}${merchantCity}`;
     const amountField = `54${formattedAmount.length.toString().padStart(2, "0")}${formattedAmount}`;
-    const txid = `TXID${Date.now()}`.substring(0, 20); // Ensure txid is within 20 characters
+    const txid = `TXID${Date.now()}`.substring(0, 25); // Ensure txid is within 25 characters
     const txidField = `05${txid.length.toString().padStart(2, "0")}${txid}`;
     const additionalData = `62${txidField.length.toString().padStart(2, "0")}${txidField}`;
 
@@ -244,10 +249,10 @@ function Information() {
       merchantAccount, // Merchant Account Information (PIX key)
       "52040000", // Merchant Category Code (generic)
       "5303986", // Currency (BRL)
-      amountField, // Transaction Amount (no decimal)
+      amountField, // Transaction Amount
       "5802BR", // Country Code
       merchantNameField, // Merchant Name
-      "6008BeloHorizonte", // Merchant City
+      merchantCityField, // Merchant City
       additionalData, // Additional Data Field (TXID)
       "6304", // CRC16 placeholder
     ].join("");
@@ -259,7 +264,7 @@ function Information() {
   // Generate QR code when payment is initiated
   useEffect(() => {
     if (isPaymentVisible) {
-      const payload = generatePixPayload(total, pixKey, merchantName);
+      const payload = generatePixPayload(total, pixKey, merchantName, merchantCity);
       console.log("PIX Payload:", payload); // Debug log
       setPixPayload(payload);
       QRCode.toDataURL(payload, { width: 200, height: 200, margin: 2 }, (err, url) => {
