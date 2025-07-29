@@ -211,8 +211,8 @@ function Information() {
   const [formError, setFormError] = useState("");
 
   // PIX configuration
-  const pixKey = "11115977660"; // CPF as PIX key
-  const merchantName = "Pedro Jeha Vianna"; // Limited to 25 chars
+  const pixKey = "11115977660"; // Client's CPF as PIX key
+  const merchantName = "Pedro Jeha Vianna"; // Client's name, within 25-character limit
 
   // Calculate CRC16-CCITT
   const calculateCRC16 = (payload) => {
@@ -227,24 +227,24 @@ function Information() {
     return crc.toString(16).toUpperCase().padStart(4, "0");
   };
 
-  // Generate PIX payload
+  // Generate PIX payload (restored to working version with Mercado Pago CPF)
   const generatePixPayload = (amount, pixKey, merchantName) => {
-    const formattedAmount = amount.toFixed(2);
-    const gui = "0014BR.GOV.BCB.PIX";
-    const pixKeyField = `01${pixKey.length.toString().padStart(2, "0")}${pixKey}`;
-    const merchantAccount = `26${gui.length.toString().padStart(2, "0")}${gui}${pixKeyField}`;
+    const formattedAmount = amount.toFixed(2).replace(".", ""); // e.g., 25.00 -> 2500
+    const gui = "BR.GOV.BCB.PIX";
+    const pixKeyField = `01${pixKey.length.toString().padStart(2, "0")}${pixKey}`; // CPF key
+    const merchantAccount = `0014${gui}${pixKeyField}`; // Standard PIX key structure
     const merchantNameField = `59${merchantName.length.toString().padStart(2, "0")}${merchantName}`;
     const amountField = `54${formattedAmount.length.toString().padStart(2, "0")}${formattedAmount}`;
-    const txid = `TXID${Date.now()}`; // Simpler transaction ID
+    const txid = `TXID${Date.now()}`.substring(0, 20); // Ensure txid is within 20 characters
     const txidField = `05${txid.length.toString().padStart(2, "0")}${txid}`;
     const additionalData = `62${txidField.length.toString().padStart(2, "0")}${txidField}`;
 
     const payload = [
       "000201", // Payload Format Indicator
-      merchantAccount, // Merchant Account Information
-      "52040000", // Merchant Category Code
+      merchantAccount, // Merchant Account Information (PIX key)
+      "52040000", // Merchant Category Code (generic)
       "5303986", // Currency (BRL)
-      amountField, // Transaction Amount
+      amountField, // Transaction Amount (no decimal)
       "5802BR", // Country Code
       merchantNameField, // Merchant Name
       "6008BeloHorizonte", // Merchant City
@@ -260,6 +260,7 @@ function Information() {
   useEffect(() => {
     if (isPaymentVisible) {
       const payload = generatePixPayload(total, pixKey, merchantName);
+      console.log("PIX Payload:", payload); // Debug log
       setPixPayload(payload);
       QRCode.toDataURL(payload, { width: 200, height: 200, margin: 2 }, (err, url) => {
         if (!err) setQrCodeUrl(url);
