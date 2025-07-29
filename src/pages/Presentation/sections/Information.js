@@ -931,7 +931,10 @@ function Information() {
                   : modalStyles.successMessage
               }
             >
-              <Typography variant="body2" sx={{ fontFamily: "'Poppins', sans-serif", color: "black" }}>
+              <Typography
+                variant="body2"
+                sx={{ fontFamily: "'Poppins', sans-serif", color: "black" }}
+              >
                 Em até 24h entraremos em contato via e-mail cadastrado.
               </Typography>
             </MKBox>
