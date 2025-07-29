@@ -925,7 +925,15 @@ function Information() {
                   : modalStyles.successMessage
               }
             >
+              <MKTypography
+                variant="body2"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  color: "black",
+                }}
+              >
               Em até 24h entraremos em contato via e-mail cadastrado.
+              </MKTypography>
             </MKBox>
           </MKBox>
         </MKBox>
