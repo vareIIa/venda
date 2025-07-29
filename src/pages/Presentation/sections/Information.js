@@ -931,12 +931,17 @@ function Information() {
                   : modalStyles.successMessage
               }
             >
-              <Typography
+              <MKTypography
                 variant="body2"
-                sx={{ fontFamily: "'Poppins', sans-serif", color: "black" }}
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  color: "black",
+                }}
               >
                 Em até 24h entraremos em contato via e-mail cadastrado.
-              </Typography>
+                <br />
+                <strong>Obrigado por garantir sua vaga!</strong>
+              </MKTypography>
             </MKBox>
           </MKBox>
         </MKBox>
