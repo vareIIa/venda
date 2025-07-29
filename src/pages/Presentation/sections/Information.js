@@ -36,7 +36,6 @@ import { useState, useEffect } from "react";
 
 // QRCode library
 import QRCode from "qrcode";
-import { Typography } from "@mui/material";
 
 // Modal styles
 const modalStyles = {
