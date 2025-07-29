@@ -932,7 +932,7 @@ function Information() {
                   color: "black",
                 }}
               >
-              Em até 24h entraremos em contato via e-mail cadastrado.
+                Em até 24h entraremos em contato via e-mail cadastrado.
               </MKTypography>
             </MKBox>
           </MKBox>
