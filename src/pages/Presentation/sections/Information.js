@@ -1,3 +1,4 @@
+
 /*
 =========================================================
 * Material Kit 2 React - v2.1.0
@@ -14,189 +15,189 @@ Coded by www.creative-tim.com
 */
 
 // @mui material components
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 
 // Material Kit 2 React components
-import MKBox from "components/MKBox";
-import MKButton from "components/MKButton";
-import MKTypography from "components/MKTypography";
+import MKBox from 'components/MKBox';
+import MKButton from 'components/MKButton';
+import MKTypography from 'components/MKTypography';
 
 // Material Kit 2 React examples
-import RotatingCard from "examples/Cards/RotatingCard";
-import RotatingCardFront from "examples/Cards/RotatingCard/RotatingCardFront";
-import RotatingCardBack from "examples/Cards/RotatingCard/RotatingCardBack";
+import RotatingCard from 'examples/Cards/RotatingCard';
+import RotatingCardFront from 'examples/Cards/RotatingCard/RotatingCardFront';
+import RotatingCardBack from 'examples/Cards/RotatingCard/RotatingCardBack';
 
 // Images
-import bgFront from "assets/images/rotating-card-bg-front.jpeg";
-import bgBack from "assets/images/rotating-card-bg-back.jpeg";
+import bgFront from 'assets/images/rotating-card-bg-front.jpeg';
+import bgBack from 'assets/images/rotating-card-bg-back.jpeg';
 
 // React hooks
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 // QRCode library
-import QRCode from "qrcode";
+import QRCode from 'qrcode';
 
 // Modal styles
 const modalStyles = {
   modal: {
-    display: "none",
-    position: "fixed",
+    display: 'none',
+    position: 'fixed',
     zIndex: 1300,
     left: 0,
     top: 0,
-    width: "100%",
-    height: "100%",
-    overflow: "auto",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    animation: "fadeInBackdrop 0.3s ease-in-out",
-    "@keyframes fadeInBackdrop": {
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    animation: 'fadeInBackdrop 0.3s ease-in-out',
+    '@keyframes fadeInBackdrop': {
       from: { opacity: 0 },
       to: { opacity: 1 },
     },
   },
   modalOpen: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContent: {
-    background: "linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)",
-    margin: { xs: "5% auto", md: "10% auto" },
-    padding: "30px",
-    borderRadius: "12px",
-    width: { xs: "90%", sm: "80%", md: "500px" },
-    maxWidth: "600px",
+    background: 'linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)',
+    margin: { xs: '5% auto', md: '10% auto' },
+    padding: '30px',
+    borderRadius: '12px',
+    width: { xs: '90%', sm: '80%', md: '500px' },
+    maxWidth: '600px',
     boxShadow: ({ boxShadows: { xl } }) => xl,
-    transform: "scale(0.7)",
-    animation: "popIn 0.3s ease-out forwards",
-    "@keyframes popIn": {
-      from: { transform: "scale(0.7)", opacity: 0 },
-      to: { transform: "scale(1)", opacity: 1 },
+    transform: 'scale(0.7)',
+    animation: 'popIn 0.3s ease-out forwards',
+    '@keyframes popIn': {
+      from: { transform: 'scale(0.7)', opacity: 0 },
+      to: { transform: 'scale(1)', opacity: 1 },
     },
   },
   close: {
-    color: "#555",
-    float: "right",
-    fontSize: "24px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    transition: "color 0.2s",
-    "&:hover, &:focus": {
-      color: "#000",
+    color: '#555',
+    float: 'right',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'color 0.2s',
+    '&:hover, &:focus': {
+      color: '#000',
     },
   },
   form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
   },
   label: {
     fontFamily: "'Poppins', sans-serif",
-    fontSize: "0.9rem",
+    fontSize: '0.9rem',
     fontWeight: 500,
-    color: "info.main",
+    color: 'info.main',
   },
   input: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid",
-    borderColor: "grey.300",
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid',
+    borderColor: 'grey.300',
     fontFamily: "'Poppins', sans-serif",
-    fontSize: "1rem",
-    transition: "border-color 0.2s, box-shadow 0.2s",
-    "&:focus": {
-      outline: "none",
-      borderColor: "primary.main",
-      boxShadow: "0 0 5px rgba(0, 123, 255, 0.3)",
+    fontSize: '1rem',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+    '&:focus': {
+      outline: 'none',
+      borderColor: 'primary.main',
+      boxShadow: '0 0 5px rgba(0, 123, 255, 0.3)',
     },
   },
   select: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid",
-    borderColor: "grey.300",
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid',
+    borderColor: 'grey.300',
     fontFamily: "'Poppins', sans-serif",
-    fontSize: "1rem",
-    backgroundColor: "#fff",
-    "&:focus": {
-      outline: "none",
-      borderColor: "primary.main",
-      boxShadow: "0 0 5px rgba(0, 123, 255, 0.3)",
+    fontSize: '1rem',
+    backgroundColor: '#fff',
+    '&:focus': {
+      outline: 'none',
+      borderColor: 'primary.main',
+      boxShadow: '0 0 5px rgba(0, 123, 255, 0.3)',
     },
   },
   button: {
-    padding: "12px",
-    borderRadius: "8px",
+    padding: '12px',
+    borderRadius: '8px',
     fontFamily: "'Poppins', sans-serif",
-    fontSize: "1rem",
+    fontSize: '1rem',
     fontWeight: 600,
-    textTransform: "none",
-    transition: "transform 0.2s, background-color 0.2s",
-    "&:hover": {
-      transform: "scale(1.03)",
-      backgroundColor: "success.dark",
+    textTransform: 'none',
+    transition: 'transform 0.2s, background-color 0.2s',
+    '&:hover': {
+      transform: 'scale(1.03)',
+      backgroundColor: 'success.dark',
     },
   },
   paymentSection: {
-    display: "none",
-    marginTop: "20px",
-    padding: "20px",
-    borderRadius: "8px",
-    backgroundColor: "#fff",
+    display: 'none',
+    marginTop: '20px',
+    padding: '20px',
+    borderRadius: '8px',
+    backgroundColor: '#fff',
     boxShadow: ({ boxShadows: { md } }) => md,
   },
   paymentSectionVisible: {
-    display: "block",
+    display: 'block',
   },
   qrCodeContainer: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "20px",
-    padding: "15px",
-    backgroundColor: "#f9fafc",
-    borderRadius: "8px",
-    border: "1px solid",
-    borderColor: "grey.200",
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '20px',
+    padding: '15px',
+    backgroundColor: '#f9fafc',
+    borderRadius: '8px',
+    border: '1px solid',
+    borderColor: 'grey.200',
   },
   qrCode: {
-    width: "200px",
-    height: "200px",
-    borderRadius: "8px",
+    width: '200px',
+    height: '200px',
+    borderRadius: '8px',
   },
   successMessage: {
-    display: "none",
-    marginTop: "20px",
-    padding: "15px",
-    borderRadius: "8px",
-    backgroundColor: "success.light",
-    color: "success.main",
+    display: 'none',
+    marginTop: '20px',
+    padding: '15px',
+    borderRadius: '8px',
+    backgroundColor: 'success.light',
+    color: 'success.main',
     fontFamily: "'Poppins', sans-serif",
-    fontSize: "0.9rem",
-    textAlign: "center",
+    fontSize: '0.9rem',
+    textAlign: 'center',
   },
   successMessageVisible: {
-    display: "block",
+    display: 'block',
   },
   pixCopyPaste: {
-    wordBreak: "break-all",
-    fontSize: "0.85rem",
-    marginTop: "15px",
-    padding: "10px",
-    backgroundColor: "#f0f4ff",
-    borderRadius: "6px",
+    wordBreak: 'break-all',
+    fontSize: '0.85rem',
+    marginTop: '15px',
+    padding: '10px',
+    backgroundColor: '#f0f4ff',
+    borderRadius: '6px',
     fontFamily: "'Poppins', sans-serif",
-    color: "text.secondary",
+    color: 'text.secondary',
   },
   errorMessage: {
-    marginTop: "10px",
-    padding: "10px",
-    borderRadius: "6px",
-    backgroundColor: "error.light",
-    color: "error.main",
+    marginTop: '10px',
+    padding: '10px',
+    borderRadius: '6px',
+    backgroundColor: 'error.light',
+    color: 'error.main',
     fontFamily: "'Poppins', sans-serif",
-    fontSize: "0.9rem",
-    textAlign: "center",
+    fontSize: '0.9rem',
+    textAlign: 'center',
   },
 };
 
@@ -204,15 +205,15 @@ function Information() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(25.0);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [pixPayload, setPixPayload] = useState("");
-  const [formError, setFormError] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const [pixPayload, setPixPayload] = useState('');
+  const [formError, setFormError] = useState('');
 
   // PIX configuration
-  const pixKey = "11115977660"; // CPF as PIX key
-  const merchantName = "Pedro Jeha Vianna".substring(0, 25); // Limited to 25 chars
+  const pixKey = '11115977660'; // CPF as PIX key
+  const merchantName = 'Pedro Jeha Vianna'; // Limited to 25 chars
 
   // Calculate CRC16-CCITT
   const calculateCRC16 = (payload) => {
@@ -224,34 +225,33 @@ function Information() {
         crc &= 0xffff;
       }
     }
-    return crc.toString(16).toUpperCase().padStart(4, "0");
+    return crc.toString(16).toUpperCase().padStart(4, '0');
   };
 
   // Generate PIX payload
   const generatePixPayload = (amount, pixKey, merchantName) => {
     const formattedAmount = amount.toFixed(2);
-    const gui = "0014BR.GOV.BCB.PIX";
-    const pixKeyField = `01${pixKey.length.toString().padStart(2, "0")}${pixKey}`;
-    const merchantAccount = `${gui}${pixKeyField}`;
-    const merchantAccountLength = merchantAccount.length.toString().padStart(2, "0");
-    const merchantNameField = `59${merchantName.length.toString().padStart(2, "0")}${merchantName}`;
-    const amountField = `54${formattedAmount.length.toString().padStart(2, "0")}${formattedAmount}`;
-    const txid = `TXID${Date.now()}${Math.floor(Math.random() * 1000)}`; // Dynamic transaction ID
-    const txidField = `05${txid.length.toString().padStart(2, "0")}${txid}`;
-    const additionalData = `62${txidField.length.toString().padStart(2, "0")}${txidField}`;
+    const gui = '0014BR.GOV.BCB.PIX';
+    const pixKeyField = `01${pixKey.length.toString().padStart(2, '0')}${pixKey}`;
+    const merchantAccount = `26${gui.length.toString().padStart(2, '0')}${gui}${pixKeyField}`;
+    const merchantNameField = `59${merchantName.length.toString().padStart(2, '0')}${merchantName}`;
+    const amountField = `54${formattedAmount.length.toString().padStart(2, '0')}${formattedAmount}`;
+    const txid = `TXID${Date.now()}`; // Simpler transaction ID
+    const txidField = `05${txid.length.toString().padStart(2, '0')}${txid}`;
+    const additionalData = `62${txidField.length.toString().padStart(2, '0')}${txidField}`;
 
     const payload = [
-      "000201", // Payload Format Indicator
-      `26${merchantAccountLength}${merchantAccount}`, // Merchant Account Information
-      "52040000", // Merchant Category Code
-      "5303986", // Currency (BRL)
+      '000201', // Payload Format Indicator
+      merchantAccount, // Merchant Account Information
+      '52040000', // Merchant Category Code
+      '5303986', // Currency (BRL)
       amountField, // Transaction Amount
-      "5802BR", // Country Code
+      '5802BR', // Country Code
       merchantNameField, // Merchant Name
-      "6008BeloHorizonte", // Merchant City (event location)
+      '6008BeloHorizonte', // Merchant City
       additionalData, // Additional Data Field (TXID)
-      "6304", // CRC16 placeholder
-    ].join("");
+      '6304', // CRC16 placeholder
+    ].join('');
 
     const crc = calculateCRC16(payload);
     return payload + crc;
@@ -264,7 +264,7 @@ function Information() {
       setPixPayload(payload);
       QRCode.toDataURL(payload, { width: 200, height: 200, margin: 2 }, (err, url) => {
         if (!err) setQrCodeUrl(url);
-        else setFormError("Erro ao gerar o QR code. Tente novamente.");
+        else setFormError('Erro ao gerar o QR code. Tente novamente.');
       });
     }
   }, [isPaymentVisible, total]);
@@ -273,7 +273,7 @@ function Information() {
   const handleOpenModal = (e) => {
     e.preventDefault();
     setIsModalOpen(true);
-    setFormError("");
+    setFormError('');
   };
 
   // Handle modal close
@@ -287,28 +287,28 @@ function Information() {
     const qty = parseInt(e.target.value);
     setQuantity(qty);
     setTotal(qty * 25);
-    setFormError("");
+    setFormError('');
   };
 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
-    setFormError("");
+    setFormError('');
   };
 
   // Validate form
   const validateForm = () => {
     if (!formData.name.trim()) {
-      setFormError("O campo Nome é obrigatório.");
+      setFormError('O campo Nome é obrigatório.');
       return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setFormError("Por favor, insira um e-mail válido.");
+      setFormError('Por favor, insira um e-mail válido.');
       return false;
     }
     if (!formData.phone.trim()) {
-      setFormError("O campo Celular é obrigatório.");
+      setFormError('O campo Celular é obrigatório.');
       return false;
     }
     return true;
@@ -316,14 +316,14 @@ function Information() {
 
   // Handle proceed to payment
   const handleProceedPayment = async () => {
-    setFormError("");
+    setFormError('');
     if (!validateForm()) return;
 
     try {
       // Save to database
-      const saveResponse = await fetch("/.netlify/functions/save-purchase", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const saveResponse = await fetch('/.netlify/functions/save-purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -335,13 +335,13 @@ function Information() {
 
       if (!saveResponse.ok) {
         const errorData = await saveResponse.json();
-        throw new Error(errorData.error || "Falha ao salvar os dados da compra");
+        throw new Error(errorData.error || 'Falha ao salvar os dados da compra');
       }
 
       setIsPaymentVisible(true);
     } catch (error) {
-      console.error("Erro ao salvar os dados:", error);
-      setFormError("Erro ao salvar os dados. Tente novamente.");
+      console.error('Erro ao salvar os dados:', error);
+      setFormError('Erro ao salvar os dados. Tente novamente.');
     }
   };
 
@@ -349,11 +349,11 @@ function Information() {
   const resetForm = () => {
     setQuantity(1);
     setTotal(25.0);
-    setFormData({ name: "", email: "", phone: "" });
+    setFormData({ name: '', email: '', phone: '' });
     setIsPaymentVisible(false);
-    setQrCodeUrl("");
-    setPixPayload("");
-    setFormError("");
+    setQrCodeUrl('');
+    setPixPayload('');
+    setFormError('');
   };
 
   return (
@@ -365,12 +365,12 @@ function Information() {
           spacing={3}
           sx={{
             mb: 8,
-            textAlign: "center",
+            textAlign: 'center',
             opacity: 0,
-            animation: "fadeIn 1s ease-in-out forwards",
-            "@keyframes fadeIn": {
-              "0%": { opacity: 0, transform: "translateY(20px)" },
-              "100%": { opacity: 1, transform: "translateY(0)" },
+            animation: 'fadeIn 1s ease-in-out forwards',
+            '@keyframes fadeIn': {
+              '0%': { opacity: 0, transform: 'translateY(20px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
             },
           }}
         >
@@ -380,14 +380,14 @@ function Information() {
               fontWeight="bold"
               sx={{
                 fontFamily: "'Poppins', sans-serif",
-                color: "info.main",
+                color: 'info.main',
                 mb: 2,
-                fontSize: { xs: "1.8rem", md: "2rem" },
+                fontSize: { xs: '1.8rem', md: '2rem' },
                 opacity: 0,
-                animation: "fadeIn 1s ease-in-out forwards",
-                "@keyframes fadeIn": {
-                  "0%": { opacity: 0, transform: "translateY(20px)" },
-                  "100%": { opacity: 1, transform: "translateY(0)" },
+                animation: 'fadeIn 1s ease-in-out forwards',
+                '@keyframes fadeIn': {
+                  '0%': { opacity: 0, transform: 'translateY(20px)' },
+                  '100%': { opacity: 1, transform: 'translateY(0)' },
                 },
               }}
             >
@@ -397,40 +397,41 @@ function Information() {
               variant="body2"
               color="text"
               sx={{
-                fontSize: "1rem",
+                fontSize: '1rem',
                 lineHeight: 1.7,
-                maxWidth: "800px",
-                mx: "auto",
+                maxWidth: '800px',
+                mx: 'auto',
                 mb: 3,
                 opacity: 0,
-                animation: "fadeIn 1s ease-in-out 0.2s forwards",
+                animation: 'fadeIn 1s ease-in-out 0.2s forwards',
               }}
             >
-              Participe de um workshop presencial exclusivo com{" "}
+              Participe de um workshop presencial exclusivo com{' '}
               <span
                 style={{
-                  backgroundColor: "#ffca28",
-                  color: "#1a237e",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
+                  backgroundColor: '#ffca28',
+                  color: '#1a237e',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
                   fontFamily: "'Poppins', sans-serif",
                   fontWeight: 600,
                 }}
               >
                 Michel Petri Dalapria
               </span>
-              , preparador físico da <strong>Seleção Brasileira</strong>, e domine as técnicas mais
-              atuais de força e potência aplicadas ao alto rendimento no futsal.
+              , preparador físico da <strong>Seleção Brasileira</strong>, e domine as
+              técnicas mais atuais de força e potência aplicadas ao alto rendimento no
+              futsal.
             </MKTypography>
             <MKTypography
               variant="body2"
               color="error"
               sx={{
                 mt: 2,
-                fontWeight: "bold",
-                fontSize: "1rem",
+                fontWeight: 'bold',
+                fontSize: '1rem',
                 opacity: 0,
-                animation: "fadeIn 1s ease-in-out 0.4s forwards",
+                animation: 'fadeIn 1s ease-in-out 0.4s forwards',
               }}
             >
               Vagas limitadas. Evento presencial em BH.
@@ -445,17 +446,17 @@ function Information() {
               borderRadius="xl"
               p={4}
               sx={{
-                background: "linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)",
+                background: 'linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)',
                 boxShadow: ({ boxShadows: { lg } }) => lg,
-                border: "1px solid",
-                borderColor: "grey.200",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                "&:hover": {
-                  transform: "scale(1.02)",
+                border: '1px solid',
+                borderColor: 'grey.200',
+                transition: 'transform 0.3s, box-shadow 0.3s',
+                '&:hover': {
+                  transform: 'scale(1.02)',
                   boxShadow: ({ boxShadows: { xl } }) => xl,
                 },
                 opacity: 0,
-                animation: "fadeIn 1s ease-in-out 0.6s forwards",
+                animation: 'fadeIn 1s ease-in-out 0.6s forwards',
               }}
             >
               <Grid container spacing={3} alignItems="center">
@@ -467,7 +468,7 @@ function Information() {
                       title="Workshop de Futsal"
                       description={
                         <>
-                          Domine as técnicas de força e potência com o preparador físico da{" "}
+                          Domine as técnicas de força e potência com o preparador físico da{' '}
                           <strong>Seleção Brasileira</strong>.
                         </>
                       }
@@ -477,9 +478,9 @@ function Information() {
                       title="Eleve Sua Carreira no Futsal!"
                       description="Uma experiência prática com Michel Petri Dalapria para transformar sua abordagem ao treino físico."
                       action={{
-                        type: "internal",
-                        route: "#",
-                        label: "GARANTIR VAGA",
+                        type: 'internal',
+                        route: '#',
+                        label: 'GARANTIR VAGA',
                         onClick: handleOpenModal,
                       }}
                     />
@@ -493,7 +494,7 @@ function Information() {
                       sx={{
                         fontFamily: "'Poppins', sans-serif",
                         mb: 2,
-                        fontSize: { xs: "1.3rem", md: "1.5rem" },
+                        fontSize: { xs: '1.3rem', md: '1.5rem' },
                       }}
                     >
                       Workshop de Preparação Física no Futsal
@@ -502,26 +503,26 @@ function Information() {
                       variant="body2"
                       color="text"
                       sx={{
-                        fontSize: "1rem",
+                        fontSize: '1rem',
                         lineHeight: 1.7,
                         mb: 2,
                       }}
                     >
-                      Uma oportunidade única para aprender com{" "}
+                      Uma oportunidade única para aprender com{' '}
                       <span
                         style={{
-                          backgroundColor: "#ffca28",
-                          color: "#1a237e",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
+                          backgroundColor: '#ffca28',
+                          color: '#1a237e',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
                           fontFamily: "'Poppins', sans-serif",
                           fontWeight: 600,
                         }}
                       >
                         Michel Petri Dalapria
-                      </span>{" "}
-                      e aplicar técnicas de elite no seu trabalho. Vagas limitadas para garantir uma
-                      experiência prática e personalizada.
+                      </span>{' '}
+                      e aplicar técnicas de elite no seu trabalho. Vagas limitadas para
+                      garantir uma experiência prática e personalizada.
                     </MKTypography>
                     <MKButton
                       variant="gradient"
@@ -532,11 +533,11 @@ function Information() {
                         fontFamily: "'Poppins', sans-serif",
                         px: 4,
                         py: 1.5,
-                        fontSize: "1rem",
-                        transition: "transform 0.3s, background-color 0.3s",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          backgroundColor: "primary.dark",
+                        fontSize: '1rem',
+                        transition: 'transform 0.3s, background-color 0.3s',
+                        '&:hover': {
+                          transform: 'scale(1.05)',
+                          backgroundColor: 'primary.dark',
                         },
                       }}
                     >
@@ -553,64 +554,73 @@ function Information() {
         <Grid container spacing={4} sx={{ mt: 8 }}>
           {/* O Desafio */}
           <Grid item xs={12}>
-            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 0.8s forwards" }}>
+            <MKBox sx={{ opacity: 0, animation: 'fadeIn 1s ease-in-out 0.8s forwards' }}>
               <MKTypography
                 variant="h3"
                 fontWeight="bold"
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
                   mb: 2,
-                  color: "info.main",
-                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                  color: 'info.main',
+                  fontSize: { xs: '1.3rem', md: '1.5rem' },
                 }}
               >
                 O Futsal Evoluiu. Sua Metodologia Acompanhou?
               </MKTypography>
-              <MKTypography variant="body2" color="text" sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
-                O jogo está mais intenso, mais físico e mais exigente. Hoje, o talento precisa estar
-                sustentado por força, velocidade e resistência. Profissionais que dominam essas
-                variáveis são cada vez mais valorizados — e cada detalhe da preparação pode definir
-                o resultado em quadra.
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: '1rem', lineHeight: 1.7 }}
+              >
+                O jogo está mais intenso, mais físico e mais exigente. Hoje, o talento
+                precisa estar sustentado por força, velocidade e resistência.
+                Profissionais que dominam essas variáveis são cada vez mais valorizados —
+                e cada detalhe da preparação pode definir o resultado em quadra.
                 <br />
                 <br />
-                Este workshop é voltado a quem deseja se atualizar com o que há de mais eficaz e
-                aplicado à realidade competitiva do futsal moderno.
+                Este workshop é voltado a quem deseja se atualizar com o que há de mais
+                eficaz e aplicado à realidade competitiva do futsal moderno.
               </MKTypography>
             </MKBox>
           </Grid>
 
           {/* O Especialista */}
           <Grid item xs={12}>
-            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 1s forwards" }}>
+            <MKBox sx={{ opacity: 0, animation: 'fadeIn 1s ease-in-out 1s forwards' }}>
               <MKTypography
                 variant="h3"
                 fontWeight="bold"
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
                   mb: 2,
-                  color: "info.main",
-                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                  color: 'info.main',
+                  fontSize: { xs: '1.3rem', md: '1.5rem' },
                 }}
               >
                 Aprenda com Quem Está no Topo da Performance Nacional
               </MKTypography>
-              <MKTypography variant="body2" color="text" sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: '1rem', lineHeight: 1.7 }}
+              >
                 <span
                   style={{
-                    backgroundColor: "#ffca28",
-                    color: "#1a237e",
-                    padding: "2px 6px",
-                    borderRadius: "4px",
+                    backgroundColor: '#ffca28',
+                    color: '#1a237e',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 600,
                   }}
                 >
                   Michel Petri Dalapria
-                </span>{" "}
-                é o atual preparador físico da <strong>Seleção Brasileira</strong> de Futsal, com
-                títulos internacionais e uma trajetória marcada pela excelência técnica e prática.
-                Sua vivência na elite do esporte, aliada à base construída no Joaçaba Futsal,
-                garante uma visão única entre teoria e aplicação real.
+                </span>{' '}
+                é o atual preparador físico da <strong>Seleção Brasileira</strong> de
+                Futsal, com títulos internacionais e uma trajetória marcada pela
+                excelência técnica e prática. Sua vivência na elite do esporte, aliada à
+                base construída no Joaçaba Futsal, garante uma visão única entre teoria e
+                aplicação real.
                 <br />
                 <br />
                 Neste evento, você terá acesso a conhecimentos antes restritos a equipes
@@ -621,15 +631,15 @@ function Information() {
 
           {/* O Conteúdo */}
           <Grid item xs={12}>
-            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 1.2s forwards" }}>
+            <MKBox sx={{ opacity: 0, animation: 'fadeIn 1s ease-in-out 1.2s forwards' }}>
               <MKTypography
                 variant="h3"
                 fontWeight="bold"
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
                   mb: 2,
-                  color: "info.main",
-                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                  color: 'info.main',
+                  fontSize: { xs: '1.3rem', md: '1.5rem' },
                 }}
               >
                 Conhecimento Aplicado para Resultados Reais em Quadra
@@ -637,20 +647,23 @@ function Information() {
               <MKTypography
                 variant="body2"
                 color="text"
-                sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+                sx={{ fontSize: '1rem', lineHeight: 1.7, mb: 2 }}
               >
-                Este não é mais um evento teórico. É uma experiência prática que vai transformar sua
-                abordagem. Você vai aprender a:
+                Este não é mais um evento teórico. É uma experiência prática que vai
+                transformar sua abordagem. Você vai aprender a:
               </MKTypography>
-              <MKBox component="ul" sx={{ pl: 3, fontSize: "1rem", lineHeight: 1.7 }}>
+              <MKBox component="ul" sx={{ pl: 3, fontSize: '1rem', lineHeight: 1.7 }}>
                 <li>
-                  Avaliar a força e a potência dos atletas com métodos objetivos e replicáveis.
+                  Avaliar a força e a potência dos atletas com métodos objetivos e
+                  replicáveis.
                 </li>
                 <li>
-                  Estruturar a periodização do treino de força conforme o calendário competitivo.
+                  Estruturar a periodização do treino de força conforme o calendário
+                  competitivo.
                 </li>
                 <li>
-                  Implementar exercícios específicos para arrancadas, frenagens, chutes e saltos.
+                  Implementar exercícios específicos para arrancadas, frenagens, chutes
+                  e saltos.
                 </li>
                 <li>Prevenir lesões com estratégias eficazes de fortalecimento.</li>
                 <li>Integrar o trabalho físico com o treino técnico e tático.</li>
@@ -660,20 +673,20 @@ function Information() {
 
           {/* As Informações */}
           <Grid item xs={12}>
-            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 1.4s forwards" }}>
+            <MKBox sx={{ opacity: 0, animation: 'fadeIn 1s ease-in-out 1.4s forwards' }}>
               <MKTypography
                 variant="h3"
                 fontWeight="bold"
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
                   mb: 2,
-                  color: "info.main",
-                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                  color: 'info.main',
+                  fontSize: { xs: '1.3rem', md: '1.5rem' },
                 }}
               >
                 Evento Presencial em BH com Bônus Exclusivo
               </MKTypography>
-              <MKBox sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+              <MKBox sx={{ fontSize: '1rem', lineHeight: 1.7 }}>
                 <MKTypography variant="body2" sx={{ mb: 1 }}>
                   <strong>📍 Local:</strong> CT OMNI – Belo Horizonte, MG
                 </MKTypography>
@@ -684,15 +697,16 @@ function Information() {
                   <strong>🕗 Horário:</strong> Das 08h às 18h (com intervalo para almoço)
                 </MKTypography>
                 <MKTypography variant="body2" sx={{ mb: 1 }}>
-                  <strong>🎟️ Vagas:</strong> Apenas 100 participantes, para garantir a qualidade da
-                  prática
+                  <strong>🎟️ Vagas:</strong> Apenas 100 participantes, para garantir a
+                  qualidade da prática
                 </MKTypography>
                 <MKTypography
                   variant="body2"
-                  sx={{ mt: 2, fontWeight: "bold", color: "success.main" }}
+                  sx={{ mt: 2, fontWeight: 'bold', color: 'success.main' }}
                 >
-                  Bônus Especial: Os 50 primeiros inscritos ganham um ingresso para assistir a uma
-                  partida oficial da LNF na Arena UniBH, logo após o evento.
+                  Bônus Especial: Os 50 primeiros inscritos ganham um ingresso para
+                  assistir a uma partida oficial da LNF na Arena UniBH, logo após o
+                  evento.
                 </MKTypography>
               </MKBox>
             </MKBox>
@@ -703,8 +717,8 @@ function Information() {
             <MKBox
               sx={{
                 opacity: 0,
-                animation: "fadeIn 1s ease-in-out 1.6s forwards",
-                textAlign: "center",
+                animation: 'fadeIn 1s ease-in-out 1.6s forwards',
+                textAlign: 'center',
               }}
             >
               <MKTypography
@@ -713,8 +727,8 @@ function Information() {
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
                   mb: 2,
-                  color: "info.main",
-                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                  color: 'info.main',
+                  fontSize: { xs: '1.3rem', md: '1.5rem' },
                 }}
               >
                 Para Quem Leva a Preparação Física a Sério
@@ -722,7 +736,7 @@ function Information() {
               <MKTypography
                 variant="body2"
                 color="text"
-                sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+                sx={{ fontSize: '1rem', lineHeight: 1.7, mb: 2 }}
               >
                 Este workshop é ideal para:
               </MKTypography>
@@ -730,27 +744,27 @@ function Information() {
                 component="ul"
                 sx={{
                   pl: 3,
-                  fontSize: "1rem",
+                  fontSize: '1rem',
                   lineHeight: 1.7,
-                  textAlign: "left",
-                  maxWidth: "600px",
-                  mx: "auto",
+                  textAlign: 'left',
+                  maxWidth: '600px',
+                  mx: 'auto',
                 }}
               >
                 <li>Preparadores físicos que buscam atualizações de alto nível.</li>
                 <li>Estudantes de Educação Física que querem se destacar no mercado.</li>
                 <li>
-                  Treinadores e entusiastas que desejam aprofundar seu domínio sobre a performance
-                  no futsal.
+                  Treinadores e entusiastas que desejam aprofundar seu domínio sobre a
+                  performance no futsal.
                 </li>
               </MKBox>
               <MKTypography
                 variant="body2"
                 color="text"
-                sx={{ fontSize: "1rem", lineHeight: 1.7, mt: 2, mb: 3 }}
+                sx={{ fontSize: '1rem', lineHeight: 1.7, mt: 2, mb: 3 }}
               >
-                Se você está comprometido com o desenvolvimento dos seus atletas — e da sua carreira
-                —, este evento foi feito para você.
+                Se você está comprometido com o desenvolvimento dos seus atletas — e da
+                sua carreira —, este evento foi feito para você.
               </MKTypography>
               <MKButton
                 variant="gradient"
@@ -761,11 +775,11 @@ function Information() {
                   fontFamily: "'Poppins', sans-serif",
                   px: 4,
                   py: 1.5,
-                  fontSize: "1rem",
-                  transition: "transform 0.3s, background-color 0.3s",
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                    backgroundColor: "primary.dark",
+                  fontSize: '1rem',
+                  transition: 'transform 0.3s, background-color 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    backgroundColor: 'primary.dark',
                   },
                 }}
               >
@@ -777,10 +791,18 @@ function Information() {
 
         {/* Modal */}
         <MKBox
-          sx={isModalOpen ? { ...modalStyles.modal, ...modalStyles.modalOpen } : modalStyles.modal}
+          sx={
+            isModalOpen
+              ? { ...modalStyles.modal, ...modalStyles.modalOpen }
+              : modalStyles.modal
+          }
         >
           <MKBox sx={modalStyles.modalContent}>
-            <MKBox component="span" sx={modalStyles.close} onClick={handleCloseModal}>
+            <MKBox
+              component="span"
+              sx={modalStyles.close}
+              onClick={handleCloseModal}
+            >
               &times;
             </MKBox>
             <MKTypography
@@ -788,14 +810,21 @@ function Information() {
               sx={{
                 fontFamily: "'Poppins', sans-serif",
                 mb: 3,
-                fontSize: "1.8rem",
-                color: "info.main",
+                fontSize: '1.8rem',
+                color: 'info.main',
               }}
             >
               Compra de Ingressos
             </MKTypography>
-            <MKBox sx={modalStyles.form} display={isPaymentVisible ? "none" : "flex"}>
-              <MKTypography component="label" htmlFor="quantity" sx={modalStyles.label}>
+            <MKBox
+              sx={modalStyles.form}
+              display={isPaymentVisible ? 'none' : 'flex'}
+            >
+              <MKTypography
+                component="label"
+                htmlFor="quantity"
+                sx={modalStyles.label}
+              >
                 Número de Ingressos (R$ 25,00 cada):
               </MKTypography>
               <MKBox
@@ -830,7 +859,11 @@ function Information() {
                 required
               />
 
-              <MKTypography component="label" htmlFor="email" sx={modalStyles.label}>
+              <MKTypography
+                component="label"
+                htmlFor="email"
+                sx={modalStyles.label}
+              >
                 E-mail (para receber o ingresso):
               </MKTypography>
               <MKBox
@@ -843,7 +876,11 @@ function Information() {
                 required
               />
 
-              <MKTypography component="label" htmlFor="phone" sx={modalStyles.label}>
+              <MKTypography
+                component="label"
+                htmlFor="phone"
+                sx={modalStyles.label}
+              >
                 Celular:
               </MKTypography>
               <MKBox
@@ -865,7 +902,9 @@ function Information() {
                 Proceder ao Pagamento
               </MKButton>
 
-              {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
+              {formError && (
+                <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>
+              )}
             </MKBox>
 
             <MKBox
@@ -882,8 +921,8 @@ function Information() {
                 variant="h3"
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
-                  fontSize: "1.25rem",
-                  color: "info.main",
+                  fontSize: '1.25rem',
+                  color: 'info.main',
                 }}
               >
                 Pagamento via PIX (Mercado Pago)
@@ -893,11 +932,11 @@ function Information() {
                 sx={{
                   mt: 1,
                   fontFamily: "'Poppins', sans-serif",
-                  color: "text.secondary",
+                  color: 'text.secondary',
                 }}
               >
-                Escaneie o QR Code abaixo para pagar via PIX. Após o pagamento, você receberá uma
-                confirmação.
+                Escaneie o QR Code abaixo para pagar via PIX. Após o pagamento, você
+                receberá uma confirmação.
               </MKTypography>
               {qrCodeUrl && (
                 <MKBox sx={modalStyles.qrCodeContainer}>
@@ -912,7 +951,9 @@ function Information() {
               <MKTypography sx={modalStyles.pixCopyPaste}>
                 PIX Copia e Cola: {pixPayload}
               </MKTypography>
-              {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
+              {formError && (
+                <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>
+              )}
             </MKBox>
 
             <MKBox
@@ -925,15 +966,7 @@ function Information() {
                   : modalStyles.successMessage
               }
             >
-              <MKTypography
-                variant="body2"
-                sx={{
-                  fontFamily: "'Poppins', sans-serif",
-                  color: "black",
-                }}
-              >
-                Em até 24h entraremos em contato via e-mail cadastrado.
-              </MKTypography>
+              Em até 24h entraremos em contato via e-mail cadastrado.
             </MKBox>
           </MKBox>
         </MKBox>
