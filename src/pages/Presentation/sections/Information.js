@@ -188,6 +188,16 @@ const modalStyles = {
     fontFamily: "'Poppins', sans-serif",
     color: "text.secondary",
   },
+  errorMessage: {
+    marginTop: "10px",
+    padding: "10px",
+    borderRadius: "6px",
+    backgroundColor: "error.light",
+    color: "error.main",
+    fontFamily: "'Poppins', sans-serif",
+    fontSize: "0.9rem",
+    textAlign: "center",
+  },
 };
 
 function Information() {
@@ -198,6 +208,7 @@ function Information() {
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [pixPayload, setPixPayload] = useState("");
+  const [formError, setFormError] = useState("");
 
   // PIX configuration
   const pixKey = "11115977660"; // CPF as PIX key
@@ -225,19 +236,19 @@ function Information() {
     const merchantAccountLength = merchantAccount.length.toString().padStart(2, "0");
     const merchantNameField = `59${merchantName.length.toString().padStart(2, "0")}${merchantName}`;
     const amountField = `54${formattedAmount.length.toString().padStart(2, "0")}${formattedAmount}`;
-    const txid = "TXID1234567890"; // Unique transaction ID
+    const txid = `TXID${Date.now()}${Math.floor(Math.random() * 1000)}`; // Dynamic transaction ID
     const txidField = `05${txid.length.toString().padStart(2, "0")}${txid}`;
     const additionalData = `62${txidField.length.toString().padStart(2, "0")}${txidField}`;
 
     const payload = [
       "000201", // Payload Format Indicator
       `26${merchantAccountLength}${merchantAccount}`, // Merchant Account Information
-      "52040000", // Merchant Category Code (0000 = not specified)
+      "52040000", // Merchant Category Code
       "5303986", // Currency (BRL)
       amountField, // Transaction Amount
       "5802BR", // Country Code
       merchantNameField, // Merchant Name
-      "6008SaoPaulo", // Merchant City (assumed, as not provided)
+      "6008BeloHorizonte", // Merchant City (event location)
       additionalData, // Additional Data Field (TXID)
       "6304", // CRC16 placeholder
     ].join("");
@@ -253,6 +264,7 @@ function Information() {
       setPixPayload(payload);
       QRCode.toDataURL(payload, { width: 200, height: 200, margin: 2 }, (err, url) => {
         if (!err) setQrCodeUrl(url);
+        else setFormError("Erro ao gerar o QR code. Tente novamente.");
       });
     }
   }, [isPaymentVisible, total]);
@@ -261,6 +273,7 @@ function Information() {
   const handleOpenModal = (e) => {
     e.preventDefault();
     setIsModalOpen(true);
+    setFormError("");
   };
 
   // Handle modal close
@@ -274,29 +287,61 @@ function Information() {
     const qty = parseInt(e.target.value);
     setQuantity(qty);
     setTotal(qty * 25);
+    setFormError("");
   };
 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
+    setFormError("");
   };
 
   // Validate form
   const validateForm = () => {
-    return (
-      formData.name.trim() &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) &&
-      formData.phone.trim()
-    );
+    if (!formData.name.trim()) {
+      setFormError("O campo Nome é obrigatório.");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setFormError("Por favor, insira um e-mail válido.");
+      return false;
+    }
+    if (!formData.phone.trim()) {
+      setFormError("O campo Celular é obrigatório.");
+      return false;
+    }
+    return true;
   };
 
   // Handle proceed to payment
-  const handleProceedPayment = () => {
-    if (validateForm()) {
+  const handleProceedPayment = async () => {
+    setFormError("");
+    if (!validateForm()) return;
+
+    try {
+      // Save to database
+      const saveResponse = await fetch("/.netlify/functions/save-purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          quantity,
+          total,
+        }),
+      });
+
+      if (!saveResponse.ok) {
+        const errorData = await saveResponse.json();
+        throw new Error(errorData.error || "Falha ao salvar os dados da compra");
+      }
+
       setIsPaymentVisible(true);
-    } else {
-      alert("Por favor, preencha todos os campos corretamente.");
+    } catch (error) {
+      console.error("Erro ao salvar os dados:", error);
+      setFormError("Erro ao salvar os dados. Tente novamente.");
     }
   };
 
@@ -308,13 +353,27 @@ function Information() {
     setIsPaymentVisible(false);
     setQrCodeUrl("");
     setPixPayload("");
+    setFormError("");
   };
 
   return (
     <MKBox component="section" py={8} my={8}>
       <Container>
         {/* Hero Section */}
-        <Grid container spacing={3} sx={{ mb: 8, textAlign: "center" }}>
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            mb: 8,
+            textAlign: "center",
+            opacity: 0,
+            animation: "fadeIn 1s ease-in-out forwards",
+            "@keyframes fadeIn": {
+              "0%": { opacity: 0, transform: "translateY(20px)" },
+              "100%": { opacity: 1, transform: "translateY(0)" },
+            },
+          }}
+        >
           <Grid item xs={12}>
             <MKTypography
               variant="h2"
@@ -417,6 +476,12 @@ function Information() {
                       image={bgBack}
                       title="Eleve Sua Carreira no Futsal!"
                       description="Uma experiência prática com Michel Petri Dalapria para transformar sua abordagem ao treino físico."
+                      action={{
+                        type: "internal",
+                        route: "#",
+                        label: "GARANTIR VAGA",
+                        onClick: handleOpenModal,
+                      }}
                     />
                   </RotatingCard>
                 </Grid>
@@ -436,7 +501,11 @@ function Information() {
                     <MKTypography
                       variant="body2"
                       color="text"
-                      sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+                      sx={{
+                        fontSize: "1rem",
+                        lineHeight: 1.7,
+                        mb: 2,
+                      }}
                     >
                       Uma oportunidade única para aprender com{" "}
                       <span
@@ -484,12 +553,7 @@ function Information() {
         <Grid container spacing={4} sx={{ mt: 8 }}>
           {/* O Desafio */}
           <Grid item xs={12}>
-            <MKBox
-              sx={{
-                opacity: 0,
-                animation: "fadeIn 1s ease-in-out 0.8s forwards",
-              }}
-            >
+            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 0.8s forwards" }}>
               <MKTypography
                 variant="h3"
                 fontWeight="bold"
@@ -514,353 +578,358 @@ function Information() {
               </MKTypography>
             </MKBox>
           </Grid>
-        </Grid>
-        {/* O Especialista */}
-        <Grid item xs={12}>
-          <MKBox
-            sx={{
-              opacity: 0,
-              animation: "fadeIn 1s ease-in-out 1s forwards",
-            }}
-          >
-            <MKTypography
-              variant="h3"
-              fontWeight="bold"
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                mb: 2,
-                color: "info.main",
-                fontSize: { xs: "1.3rem", md: "1.5rem" },
-              }}
-            >
-              Aprenda com Quem Está no Topo da Performance Nacional
-            </MKTypography>
-            <MKTypography variant="body2" color="text" sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
-              <span
-                style={{
-                  backgroundColor: "#ffca28",
-                  color: "#1a237e",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
+
+          {/* O Especialista */}
+          <Grid item xs={12}>
+            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 1s forwards" }}>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
                   fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 600,
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
                 }}
               >
-                Michel Petri Dalapria
-              </span>{" "}
-              é o atual preparador físico da <strong>Seleção Brasileira</strong> de Futsal, com
-              títulos internacionais e uma trajetória marcada pela excelência técnica e prática. Sua
-              vivência na elite do esporte, aliada à base construída no Joaçaba Futsal, garante uma
-              visão única entre teoria e aplicação real.
-              <br />
-              <br />
-              Neste evento, você terá acesso a conhecimentos antes restritos a equipes profissionais
-              — direto da fonte.
-            </MKTypography>
-          </MKBox>
-        </Grid>
-
-        {/* O Conteúdo */}
-        <Grid item xs={12}>
-          <MKBox
-            sx={{
-              opacity: 0,
-              animation: "fadeIn 1s ease-in-out 1.2s forwards",
-            }}
-          >
-            <MKTypography
-              variant="h3"
-              fontWeight="bold"
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                mb: 2,
-                color: "info.main",
-                fontSize: { xs: "1.3rem", md: "1.5rem" },
-              }}
-            >
-              Conhecimento Aplicado para Resultados Reais em Quadra
-            </MKTypography>
-            <MKTypography
-              variant="body2"
-              color="text"
-              sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
-            >
-              Este não é mais um evento teórico. É uma experiência prática que vai transformar sua
-              abordagem. Você vai aprender a:
-            </MKTypography>
-            <MKBox component="ul" sx={{ pl: 3, fontSize: "1rem", lineHeight: 1.7 }}>
-              <li>Avaliar a força e a potência dos atletas com métodos objetivos e replicáveis.</li>
-              <li>
-                Estruturar a periodização do treino de força conforme o calendário competitivo.
-              </li>
-              <li>
-                Implementar exercícios específicos para arrancadas, frenagens, chutes e saltos.
-              </li>
-              <li>Prevenir lesões com estratégias eficazes de fortalecimento.</li>
-              <li>Integrar o trabalho físico com o treino técnico e tático.</li>
+                Aprenda com Quem Está no Topo da Performance Nacional
+              </MKTypography>
+              <MKTypography variant="body2" color="text" sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+                <span
+                  style={{
+                    backgroundColor: "#ffca28",
+                    color: "#1a237e",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: 600,
+                  }}
+                >
+                  Michel Petri Dalapria
+                </span>{" "}
+                é o atual preparador físico da <strong>Seleção Brasileira</strong> de Futsal, com
+                títulos internacionais e uma trajetória marcada pela excelência técnica e prática.
+                Sua vivência na elite do esporte, aliada à base construída no Joaçaba Futsal,
+                garante uma visão única entre teoria e aplicação real.
+                <br />
+                <br />
+                Neste evento, você terá acesso a conhecimentos antes restritos a equipes
+                profissionais — direto da fonte.
+              </MKTypography>
             </MKBox>
-          </MKBox>
-        </Grid>
+          </Grid>
 
-        {/* As Informações */}
-        <Grid item xs={12}>
-          <MKBox
-            sx={{
-              opacity: 0,
-              animation: "fadeIn 1s ease-in-out 1.4s forwards",
-            }}
-          >
-            <MKTypography
-              variant="h3"
-              fontWeight="bold"
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                mb: 2,
-                color: "info.main",
-                fontSize: { xs: "1.3rem", md: "1.5rem" },
-              }}
-            >
-              Evento Presencial em BH com Bônus Exclusivo
-            </MKTypography>
-            <MKBox sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
-              <MKTypography variant="body2" sx={{ mb: 1 }}>
-                <strong>📍 Local:</strong> CT OMNI – Belo Horizonte, MG
-              </MKTypography>
-              <MKTypography variant="body2" sx={{ mb: 1 }}>
-                <strong>📅 Data:</strong> 27 de setembro de 2025
-              </MKTypography>
-              <MKTypography variant="body2" sx={{ mb: 1 }}>
-                <strong>🕗 Horário:</strong> Das 08h às 18h (com intervalo para almoço)
-              </MKTypography>
-              <MKTypography variant="body2" sx={{ mb: 1 }}>
-                <strong>🎟️ Vagas:</strong> Apenas 100 participantes, para garantir a qualidade da
-                prática
+          {/* O Conteúdo */}
+          <Grid item xs={12}>
+            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 1.2s forwards" }}>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Conhecimento Aplicado para Resultados Reais em Quadra
               </MKTypography>
               <MKTypography
                 variant="body2"
-                sx={{ mt: 2, fontWeight: "bold", color: "success.main" }}
+                color="text"
+                sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
               >
-                Bônus Especial: Os 50 primeiros inscritos ganham um ingresso para assistir a uma
-                partida oficial da LNF na Arena UniBH, logo após o evento.
+                Este não é mais um evento teórico. É uma experiência prática que vai transformar sua
+                abordagem. Você vai aprender a:
               </MKTypography>
-            </MKBox>
-          </MKBox>
-        </Grid>
-
-        {/* O Convite Final */}
-        <Grid item xs={12}>
-          <MKBox
-            sx={{
-              opacity: 0,
-              animation: "fadeIn 1s ease-in-out 1.6s forwards",
-              textAlign: "center",
-            }}
-          >
-            <MKTypography
-              variant="h3"
-              fontWeight="bold"
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                mb: 2,
-                color: "info.main",
-                fontSize: { xs: "1.3rem", md: "1.5rem" },
-              }}
-            >
-              Para Quem Leva a Preparação Física a Sério
-            </MKTypography>
-            <MKTypography
-              variant="body2"
-              color="text"
-              sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
-            >
-              Este workshop é ideal para:
-            </MKTypography>
-            <MKBox
-              component="ul"
-              sx={{
-                pl: 3,
-                fontSize: "1rem",
-                lineHeight: 1.7,
-                textAlign: "left",
-                maxWidth: "600px",
-                mx: "auto",
-              }}
-            >
-              <li>Preparadores físicos que buscam atualizações de alto nível.</li>
-              <li>Estudantes de Educação Física que querem se destacar no mercado.</li>
-              <li>
-                Treinadores e entusiastas que desejam aprofundar seu domínio sobre a performance no
-                futsal.
-              </li>
-            </MKBox>
-            <MKTypography
-              variant="body2"
-              color="text"
-              sx={{ fontSize: "1rem", lineHeight: 1.7, mt: 2, mb: 3 }}
-            >
-              Se você está comprometido com o desenvolvimento dos seus atletas — e da sua carreira
-              —, este evento foi feito para você.
-            </MKTypography>
-            <MKButton
-              variant="gradient"
-              color="primary"
-              size="large"
-              onClick={handleOpenModal}
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                px: 4,
-                py: 1.5,
-                fontSize: "1rem",
-                transition: "transform 0.3s, background-color 0.3s",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  backgroundColor: "primary.dark",
-                },
-              }}
-            >
-              Quero Minha Vaga e o Bônus!
-            </MKButton>
-          </MKBox>
-        </Grid>
-      </Container>
-
-      {/* Modal */}
-      <MKBox
-        sx={isModalOpen ? { ...modalStyles.modal, ...modalStyles.modalOpen } : modalStyles.modal}
-      >
-        <MKBox sx={modalStyles.modalContent}>
-          <MKBox component="span" sx={modalStyles.close} onClick={handleCloseModal}>
-            &times;
-          </MKBox>
-          <MKTypography
-            variant="h2"
-            sx={{
-              fontFamily: "'Poppins', sans-serif",
-              mb: 3,
-              fontSize: "1.8rem",
-              color: "info.main",
-            }}
-          >
-            Compra de Ingressos
-          </MKTypography>
-          <MKBox sx={modalStyles.form} display={isPaymentVisible ? "none" : "flex"}>
-            <MKTypography component="label" htmlFor="quantity" sx={modalStyles.label}>
-              Número de Ingressos (R$ 25,00 cada):
-            </MKTypography>
-            <MKBox
-              component="select"
-              id="quantity"
-              value={quantity}
-              onChange={handleQuantityChange}
-              sx={modalStyles.select}
-              required
-            >
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                <option key={num} value={num}>
-                  {num}
-                </option>
-              ))}
-            </MKBox>
-
-            <MKTypography sx={modalStyles.label}>
-              Total: R$ <span>{total.toFixed(2)}</span>
-            </MKTypography>
-
-            <MKTypography component="label" htmlFor="name" sx={modalStyles.label}>
-              Nome:
-            </MKTypography>
-            <MKBox
-              component="input"
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              sx={modalStyles.input}
-              required
-            />
-
-            <MKTypography component="label" htmlFor="email" sx={modalStyles.label}>
-              E-mail (para receber o ingresso):
-            </MKTypography>
-            <MKBox
-              component="input"
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              sx={modalStyles.input}
-              required
-            />
-
-            <MKTypography component="label" htmlFor="phone" sx={modalStyles.label}>
-              Celular:
-            </MKTypography>
-            <MKBox
-              component="input"
-              type="tel"
-              id="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              sx={modalStyles.input}
-              required
-            />
-
-            <MKButton
-              variant="gradient"
-              color="success"
-              sx={modalStyles.button}
-              onClick={handleProceedPayment}
-            >
-              Proceder ao Pagamento
-            </MKButton>
-          </MKBox>
-
-          <MKBox
-            sx={
-              isPaymentVisible
-                ? { ...modalStyles.paymentSection, ...modalStyles.paymentSectionVisible }
-                : modalStyles.paymentSection
-            }
-          >
-            <MKTypography
-              variant="h3"
-              sx={{ fontFamily: "'Poppins', sans-serif", fontSize: "1.25rem", color: "info.main" }}
-            >
-              Pagamento via PIX (Mercado Pago)
-            </MKTypography>
-            <MKTypography
-              variant="body2"
-              sx={{ mt: 1, fontFamily: "'Poppins', sans-serif", color: "text.secondary" }}
-            >
-              Escaneie o QR Code abaixo para pagar via PIX. Após o pagamento, você receberá uma
-              confirmação.
-            </MKTypography>
-            {qrCodeUrl && (
-              <MKBox sx={modalStyles.qrCodeContainer}>
-                <MKBox component="img" src={qrCodeUrl} alt="PIX QR Code" sx={modalStyles.qrCode} />
+              <MKBox component="ul" sx={{ pl: 3, fontSize: "1rem", lineHeight: 1.7 }}>
+                <li>
+                  Avaliar a força e a potência dos atletas com métodos objetivos e replicáveis.
+                </li>
+                <li>
+                  Estruturar a periodização do treino de força conforme o calendário competitivo.
+                </li>
+                <li>
+                  Implementar exercícios específicos para arrancadas, frenagens, chutes e saltos.
+                </li>
+                <li>Prevenir lesões com estratégias eficazes de fortalecimento.</li>
+                <li>Integrar o trabalho físico com o treino técnico e tático.</li>
               </MKBox>
-            )}
-            <MKTypography sx={modalStyles.pixCopyPaste}>
-              PIX Copia e Cola: {pixPayload}
-            </MKTypography>
-          </MKBox>
+            </MKBox>
+          </Grid>
 
-          <MKBox
-            sx={
-              isPaymentVisible
-                ? { ...modalStyles.successMessage, ...modalStyles.successMessageVisible }
-                : modalStyles.successMessage
-            }
-          >
+          {/* As Informações */}
+          <Grid item xs={12}>
+            <MKBox sx={{ opacity: 0, animation: "fadeIn 1s ease-in-out 1.4s forwards" }}>
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Evento Presencial em BH com Bônus Exclusivo
+              </MKTypography>
+              <MKBox sx={{ fontSize: "1rem", lineHeight: 1.7 }}>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>📍 Local:</strong> CT OMNI – Belo Horizonte, MG
+                </MKTypography>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>📅 Data:</strong> 27 de setembro de 2025
+                </MKTypography>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>🕗 Horário:</strong> Das 08h às 18h (com intervalo para almoço)
+                </MKTypography>
+                <MKTypography variant="body2" sx={{ mb: 1 }}>
+                  <strong>🎟️ Vagas:</strong> Apenas 100 participantes, para garantir a qualidade da
+                  prática
+                </MKTypography>
+                <MKTypography
+                  variant="body2"
+                  sx={{ mt: 2, fontWeight: "bold", color: "success.main" }}
+                >
+                  Bônus Especial: Os 50 primeiros inscritos ganham um ingresso para assistir a uma
+                  partida oficial da LNF na Arena UniBH, logo após o evento.
+                </MKTypography>
+              </MKBox>
+            </MKBox>
+          </Grid>
+
+          {/* O Convite Final */}
+          <Grid item xs={12}>
+            <MKBox
+              sx={{
+                opacity: 0,
+                animation: "fadeIn 1s ease-in-out 1.6s forwards",
+                textAlign: "center",
+              }}
+            >
+              <MKTypography
+                variant="h3"
+                fontWeight="bold"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  mb: 2,
+                  color: "info.main",
+                  fontSize: { xs: "1.3rem", md: "1.5rem" },
+                }}
+              >
+                Para Quem Leva a Preparação Física a Sério
+              </MKTypography>
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: "1rem", lineHeight: 1.7, mb: 2 }}
+              >
+                Este workshop é ideal para:
+              </MKTypography>
+              <MKBox
+                component="ul"
+                sx={{
+                  pl: 3,
+                  fontSize: "1rem",
+                  lineHeight: 1.7,
+                  textAlign: "left",
+                  maxWidth: "600px",
+                  mx: "auto",
+                }}
+              >
+                <li>Preparadores físicos que buscam atualizações de alto nível.</li>
+                <li>Estudantes de Educação Física que querem se destacar no mercado.</li>
+                <li>
+                  Treinadores e entusiastas que desejam aprofundar seu domínio sobre a performance
+                  no futsal.
+                </li>
+              </MKBox>
+              <MKTypography
+                variant="body2"
+                color="text"
+                sx={{ fontSize: "1rem", lineHeight: 1.7, mt: 2, mb: 3 }}
+              >
+                Se você está comprometido com o desenvolvimento dos seus atletas — e da sua carreira
+                —, este evento foi feito para você.
+              </MKTypography>
+              <MKButton
+                variant="gradient"
+                color="primary"
+                size="large"
+                onClick={handleOpenModal}
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  px: 4,
+                  py: 1.5,
+                  fontSize: "1rem",
+                  transition: "transform 0.3s, background-color 0.3s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    backgroundColor: "primary.dark",
+                  },
+                }}
+              >
+                Quero Minha Vaga e o Bônus!
+              </MKButton>
+            </MKBox>
+          </Grid>
+        </Grid>
+
+        {/* Modal */}
+        <MKBox
+          sx={isModalOpen ? { ...modalStyles.modal, ...modalStyles.modalOpen } : modalStyles.modal}
+        >
+          <MKBox sx={modalStyles.modalContent}>
+            <MKBox component="span" sx={modalStyles.close} onClick={handleCloseModal}>
+              &times;
+            </MKBox>
             <MKTypography
-              variant="body2"
-              sx={{ fontFamily: "'Poppins', sans-serif", color: "black" }}
+              variant="h2"
+              sx={{
+                fontFamily: "'Poppins', sans-serif",
+                mb: 3,
+                fontSize: "1.8rem",
+                color: "info.main",
+              }}
+            >
+              Compra de Ingressos
+            </MKTypography>
+            <MKBox sx={modalStyles.form} display={isPaymentVisible ? "none" : "flex"}>
+              <MKTypography component="label" htmlFor="quantity" sx={modalStyles.label}>
+                Número de Ingressos (R$ 25,00 cada):
+              </MKTypography>
+              <MKBox
+                component="select"
+                id="quantity"
+                value={quantity}
+                onChange={handleQuantityChange}
+                sx={modalStyles.select}
+                required
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </MKBox>
+
+              <MKTypography sx={modalStyles.label}>
+                Total: R$ <span>{total.toFixed(2)}</span>
+              </MKTypography>
+
+              <MKTypography component="label" htmlFor="name" sx={modalStyles.label}>
+                Nome:
+              </MKTypography>
+              <MKBox
+                component="input"
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                sx={modalStyles.input}
+                required
+              />
+
+              <MKTypography component="label" htmlFor="email" sx={modalStyles.label}>
+                E-mail (para receber o ingresso):
+              </MKTypography>
+              <MKBox
+                component="input"
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                sx={modalStyles.input}
+                required
+              />
+
+              <MKTypography component="label" htmlFor="phone" sx={modalStyles.label}>
+                Celular:
+              </MKTypography>
+              <MKBox
+                component="input"
+                type="tel"
+                id="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                sx={modalStyles.input}
+                required
+              />
+
+              <MKButton
+                variant="gradient"
+                color="success"
+                sx={modalStyles.button}
+                onClick={handleProceedPayment}
+              >
+                Proceder ao Pagamento
+              </MKButton>
+
+              {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
+            </MKBox>
+
+            <MKBox
+              sx={
+                isPaymentVisible
+                  ? {
+                      ...modalStyles.paymentSection,
+                      ...modalStyles.paymentSectionVisible,
+                    }
+                  : modalStyles.paymentSection
+              }
+            >
+              <MKTypography
+                variant="h3"
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: "1.25rem",
+                  color: "info.main",
+                }}
+              >
+                Pagamento via PIX (Mercado Pago)
+              </MKTypography>
+              <MKTypography
+                variant="body2"
+                sx={{
+                  mt: 1,
+                  fontFamily: "'Poppins', sans-serif",
+                  color: "text.secondary",
+                }}
+              >
+                Escaneie o QR Code abaixo para pagar via PIX. Após o pagamento, você receberá uma
+                confirmação.
+              </MKTypography>
+              {qrCodeUrl && (
+                <MKBox sx={modalStyles.qrCodeContainer}>
+                  <MKBox
+                    component="img"
+                    src={qrCodeUrl}
+                    alt="PIX QR Code"
+                    sx={modalStyles.qrCode}
+                  />
+                </MKBox>
+              )}
+              <MKTypography sx={modalStyles.pixCopyPaste}>
+                PIX Copia e Cola: {pixPayload}
+              </MKTypography>
+              {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
+            </MKBox>
+
+            <MKBox
+              sx={
+                isPaymentVisible
+                  ? {
+                      ...modalStyles.successMessage,
+                      ...modalStyles.successMessageVisible,
+                    }
+                  : modalStyles.successMessage
+              }
             >
               Em até 24h entraremos em contato via e-mail cadastrado.
-            </MKTypography>
+            </MKBox>
           </MKBox>
         </MKBox>
-      </MKBox>
+      </Container>
     </MKBox>
   );
 }
