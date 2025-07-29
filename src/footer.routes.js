@@ -39,7 +39,7 @@ export default {
       items: [
         {
           name: "Fale Conosco",
-          href: "https://www.instagram.com/pedrojeha?igsh=MWU4a3N1bDhqNzZsdQ==",
+          href: "https://www.instagram.com/pedrojeha",
         },
       ],
     },

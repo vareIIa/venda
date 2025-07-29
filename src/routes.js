@@ -17,9 +17,8 @@ Coded by www.creative-tim.com
 import Icon from "@mui/material/Icon";
 
 // Pages
-import AboutUs from "layouts/pages/landing-pages/about-us";
+
 import ContactUs from "layouts/pages/landing-pages/contact-us";
-import Author from "layouts/pages/landing-pages/author";
 
 const routes = [
   {
@@ -28,19 +27,9 @@ const routes = [
     dropdown: true,
     collapse: [
       {
-        name: "Suporte via Whatsapp",
-        route: "",
-        component: <AboutUs />,
-      },
-      {
         name: "Suporte via Instagram",
-        route: "/pages/landing-pages/contact-us",
+        href: "https://www.instagram.com/pedrojeha",
         component: <ContactUs />,
-      },
-      {
-        name: "Suporte Técnico",
-        route: "/pages/landing-pages/author",
-        component: <Author />,
       },
     ],
   },

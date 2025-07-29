@@ -424,28 +424,7 @@ function DefaultNavbar({ brand, routes, light, sticky, center }) {
           >
             {renderNavbarItems}
           </MKBox>
-          <MKBox ml={{ xs: "auto", lg: 0 }}>
-            <MKButton
-              component={Link}
-              to="/comprar-ingresso"
-              variant="gradient"
-              color="primary"
-              size="small"
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: { xs: "0.8rem", md: "0.9rem" },
-                px: { xs: 2, md: 3 },
-                py: 1,
-                border: "1px solid #ffca28",
-                "&:hover": {
-                  backgroundColor: "primary.dark",
-                  transform: "scale(1.05)",
-                },
-              }}
-            >
-              Comprar Ingresso
-            </MKButton>
-          </MKBox>
+          <MKBox ml={{ xs: "auto", lg: 0 }}></MKBox>
           <MKBox
             display={{ xs: "inline-block", lg: "none" }}
             lineHeight={0}
