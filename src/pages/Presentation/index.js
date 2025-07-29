@@ -46,7 +46,7 @@ function Presentation() {
         width="100%"
         sx={{
           backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
+
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -141,27 +141,7 @@ function Presentation() {
               >
                 <MKSocialButton
                   component="a"
-                  href="https://twitter.com/yourprofile"
-                  target="_blank"
-                  color="twitter"
-                  sx={{ mr: 1, fontSize: { xs: "0.8rem", md: "0.9rem" }, px: 2, py: 1 }}
-                >
-                  <i className="fab fa-twitter" style={{ marginRight: "6px" }} />
-                  Tweet
-                </MKSocialButton>
-                <MKSocialButton
-                  component="a"
-                  href="https://www.facebook.com/yourprofile"
-                  target="_blank"
-                  color="facebook"
-                  sx={{ mr: 1, fontSize: { xs: "0.8rem", md: "0.9rem" }, px: 2, py: 1 }}
-                >
-                  <i className="fab fa-facebook" style={{ marginRight: "6px" }} />
-                  Compartilhar
-                </MKSocialButton>
-                <MKSocialButton
-                  component="a"
-                  href="https://www.instagram.com/yourprofile"
+                  href="https://www.instagram.com/pedrojeha?igsh=MWU4a3N1bDhqNzZsdQ=="
                   target="_blank"
                   color="instagram"
                   sx={{ fontSize: { xs: "0.8rem", md: "0.9rem" }, px: 2, py: 1 }}

@@ -8,14 +8,11 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import MKTypography from "components/MKTypography";
 
 // Images
-import logoTickets from "assets/images/logo-tickets.png";
 
 const date = new Date().getFullYear();
 
 export default {
   brand: {
-    name: "Vianna Tickets",
-    image: logoTickets,
     route: "/",
   },
   socials: [
@@ -40,10 +37,10 @@ export default {
     {
       name: "Suporte",
       items: [
-        { name: "Fale Conosco", href: "/contato" },
-        { name: "Central de Ajuda", href: "/central-de-ajuda" },
-        { name: "Reembolsos", href: "/reembolsos" },
-        { name: "Dúvidas Frequentes", href: "/faq" },
+        {
+          name: "Fale Conosco",
+          href: "https://www.instagram.com/pedrojeha?igsh=MWU4a3N1bDhqNzZsdQ==",
+        },
       ],
     },
   ],
