@@ -36,6 +36,7 @@ import { useState, useEffect } from "react";
 
 // QRCode library
 import QRCode from "qrcode";
+import { Typography } from "@mui/material";
 
 // Modal styles
 const modalStyles = {
@@ -915,7 +916,7 @@ function Information() {
                 </MKBox>
               )}
               <MKTypography sx={modalStyles.pixCopyPaste}>
-                PIX Copia e Cola: {pixPayload}
+                <strong>PIX Copia e Cola:</strong> {pixPayload}
               </MKTypography>
               {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
             </MKBox>
@@ -930,7 +931,9 @@ function Information() {
                   : modalStyles.successMessage
               }
             >
-              Em até 24h entraremos em contato via e-mail cadastrado.
+              <Typography variant="body2" sx={{ fontFamily: "'Poppins', sans-serif", color: "black" }}>
+                Em até 24h entraremos em contato via e-mail cadastrado.
+              </Typography>
             </MKBox>
           </MKBox>
         </MKBox>
