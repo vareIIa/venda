@@ -158,9 +158,9 @@ function Presentation() {
                 </MKSocialButton>
               </Grid>
             </Grid>
-            </Container>
-          </MKBox>
-        </Card>
+          </Container>
+        </MKBox>
+      </Card>
       <MKBox pt={3} px={1} mt={3}>
         <DefaultFooter content={footerRoutes} />
       </MKBox>
