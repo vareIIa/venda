@@ -17,6 +17,8 @@ Coded by www.creative-tim.com
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
@@ -36,8 +38,12 @@ import footerRoutes from "footer.routes";
 
 // Images
 import bgImage from "assets/images/bg-presentation.jpg";
+import bgImageMobile from "assets/images/bg-presentation-mobile.jpg";
 
 function Presentation() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <>
       <DefaultNavbar routes={routes} sticky />
@@ -45,8 +51,10 @@ function Presentation() {
         minHeight="50vh"
         width="100%"
         sx={{
-          backgroundImage: `url(${bgImage})`,
-
+          backgroundImage: `url(${isMobile ? bgImageMobile : bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -138,11 +146,21 @@ function Presentation() {
                   <i className="fab fa-instagram" style={{ marginRight: "6px" }} />
                   Seguir
                 </MKSocialButton>
+                <MKSocialButton
+                  component="a"
+                  href="https://www.instagram.com/rodrigosantiagopf"
+                  target="_blank"
+                  color="instagram"
+                  sx={{ fontSize: { xs: "0.8rem", md: "0.9rem" }, px: 2, py: 1, ml: 1 }}
+                >
+                  <i className="fab fa-instagram" style={{ marginRight: "6px" }} />
+                  Seguir
+                </MKSocialButton>
               </Grid>
             </Grid>
-          </Container>
-        </MKBox>
-      </Card>
+            </Container>
+          </MKBox>
+        </Card>
       <MKBox pt={3} px={1} mt={3}>
         <DefaultFooter content={footerRoutes} />
       </MKBox>
