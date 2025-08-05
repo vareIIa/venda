@@ -114,17 +114,6 @@ function Presentation() {
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} lg={6} sx={{ textAlign: { xs: "center", lg: "left" } }}>
                 <MKTypography
-                  variant="h5"
-                  fontWeight="bold"
-                  mb={1}
-                  sx={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontSize: { xs: "1.1rem", md: "1.25rem" },
-                  }}
-                >
-                  Conecte-se com o Vianna
-                </MKTypography>
-                <MKTypography
                   variant="body2"
                   color="text"
                   sx={{ fontSize: { xs: "0.8rem", md: "0.9rem" }, lineHeight: 1.7 }}
@@ -141,7 +130,7 @@ function Presentation() {
               >
                 <MKSocialButton
                   component="a"
-                  href="https://www.instagram.com/pedrojeha?igsh=MWU4a3N1bDhqNzZsdQ=="
+                  href="https://www.instagram.com/pedrojeha"
                   target="_blank"
                   color="instagram"
                   sx={{ fontSize: { xs: "0.8rem", md: "0.9rem" }, px: 2, py: 1 }}

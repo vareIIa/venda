@@ -17,20 +17,8 @@ export default {
   },
   socials: [
     {
-      icon: <FacebookIcon />,
-      link: "https://www.facebook.com/ViannaTickets",
-    },
-    {
-      icon: <TwitterIcon />,
-      link: "https://twitter.com/ViannaTickets",
-    },
-    {
       icon: <InstagramIcon />,
-      link: "https://www.instagram.com/ViannaTickets",
-    },
-    {
-      icon: <YouTubeIcon />,
-      link: "https://www.youtube.com/channel/ViannaTickets",
+      link: "https://www.instagram.com/pedrojeha",
     },
   ],
   menus: [
@@ -46,7 +34,7 @@ export default {
   ],
   copyright: (
     <MKTypography variant="button" fontWeight="regular">
-      Todos os direitos reservados. Copyright © {date} Vianna Tickets.
+      Todos os direitos reservados. Copyright © {date} Jota TEC
     </MKTypography>
   ),
 };
