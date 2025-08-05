@@ -27,8 +27,8 @@ exports.handler = async function (event) {
   try {
     const sql = neon(process.env.NETLIFY_DATABASE_URL);
     await sql`
-      INSERT INTO purchases (name, email, phone, payment_status)
-      VALUES (${name}, ${email}, ${phone}, 'pending')
+      INSERT INTO purchases (name, email, phone)
+      VALUES (${name}, ${email}, ${phone})
     `;
     return {
       statusCode: 201,
