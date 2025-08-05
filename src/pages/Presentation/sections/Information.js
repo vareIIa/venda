@@ -352,17 +352,6 @@ function Information() {
                       image={bgBack}
                       title="Eleve Sua Carreira no Futsal!"
                       description="Uma experiência prática com Michel Petri Dalapria para transformar sua abordagem ao treino físico."
-                      action={{
-                        type: "internal",
-                        route: "#",
-                        label: "GARANTIR VAGA",
-                        onClick: handleOpenModal,
-                      }}
-                      sx={{
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                      }}
                     />
                   </RotatingCard>
                 </Grid>
