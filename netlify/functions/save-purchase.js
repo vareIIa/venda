@@ -1,4 +1,3 @@
-// netlify/functions/save-purchase.js
 require('dotenv').config();
 const { neon } = require('@neondatabase/serverless');
 
@@ -8,10 +7,10 @@ exports.handler = async function (event) {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  const { name, email, phone, quantity, total } = JSON.parse(event.body);
+  const { name, email, phone } = JSON.parse(event.body);
 
   // Validation
-  if (!name || !email || !phone || !quantity || !total) {
+  if (!name || !email || !phone) {
     return {
       statusCode: 400,
       body: JSON.stringify({ error: 'Campos obrigatórios ausentes' }),
@@ -28,8 +27,8 @@ exports.handler = async function (event) {
   try {
     const sql = neon(process.env.NETLIFY_DATABASE_URL);
     await sql`
-      INSERT INTO purchases (name, email, phone, quantity, total, payment_status)
-      VALUES (${name}, ${email}, ${phone}, ${quantity}, ${total}, 'pending')
+      INSERT INTO purchases (name, email, phone, payment_status)
+      VALUES (${name}, ${email}, ${phone}, 'pending')
     `;
     return {
       statusCode: 201,
