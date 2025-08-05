@@ -1,7 +1,6 @@
 // @mui icons
 import InstagramIcon from "@mui/icons-material/Instagram";
 
-
 // Material Kit 2 React components
 import MKTypography from "components/MKTypography";
 
