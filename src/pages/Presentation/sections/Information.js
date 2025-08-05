@@ -4,7 +4,7 @@
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/material-kit-react
-* Copyright 2023 Creative Tim[](https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
 Coded by www.creative-tim.com
 
@@ -32,10 +32,7 @@ import bgFront from "assets/images/rotating-card-bg-front.jpeg";
 import bgBack from "assets/images/rotating-card-bg-back.jpeg";
 
 // React hooks
-import { useState, useEffect } from "react";
-
-// QRCode library
-import QRCode from "qrcode";
+import { useState } from "react";
 
 // Modal styles
 const modalStyles = {
@@ -111,20 +108,6 @@ const modalStyles = {
       boxShadow: "0 0 5px rgba(0, 123, 255, 0.3)",
     },
   },
-  select: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid",
-    borderColor: "grey.300",
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "1rem",
-    backgroundColor: "#fff",
-    "&:focus": {
-      outline: "none",
-      borderColor: "primary.main",
-      boxShadow: "0 0 5px rgba(0, 123, 255, 0.3)",
-    },
-  },
   button: {
     padding: "12px",
     borderRadius: "8px",
@@ -138,56 +121,6 @@ const modalStyles = {
       backgroundColor: "success.dark",
     },
   },
-  paymentSection: {
-    display: "none",
-    marginTop: "20px",
-    padding: "20px",
-    borderRadius: "8px",
-    backgroundColor: "#fff",
-    boxShadow: ({ boxShadows: { md } }) => md,
-  },
-  paymentSectionVisible: {
-    display: "block",
-  },
-  qrCodeContainer: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "20px",
-    padding: "15px",
-    backgroundColor: "#f9fafc",
-    borderRadius: "8px",
-    border: "1px solid",
-    borderColor: "grey.200",
-  },
-  qrCode: {
-    width: "200px",
-    height: "200px",
-    borderRadius: "8px",
-  },
-  successMessage: {
-    display: "none",
-    marginTop: "20px",
-    padding: "15px",
-    borderRadius: "8px",
-    backgroundColor: "success.light",
-    color: "success.main",
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "0.9rem",
-    textAlign: "center",
-  },
-  successMessageVisible: {
-    display: "block",
-  },
-  pixCopyPaste: {
-    wordBreak: "break-all",
-    fontSize: "0.85rem",
-    marginTop: "15px",
-    padding: "10px",
-    backgroundColor: "#f0f4ff",
-    borderRadius: "6px",
-    fontFamily: "'Poppins', sans-serif",
-    color: "text.secondary",
-  },
   errorMessage: {
     marginTop: "10px",
     padding: "10px",
@@ -198,81 +131,28 @@ const modalStyles = {
     fontSize: "0.9rem",
     textAlign: "center",
   },
+  socialLinks: {
+    display: "flex",
+    gap: "15px",
+    justifyContent: "center",
+    mt: 2,
+  },
+  socialLink: {
+    fontFamily: "'Poppins', sans-serif",
+    fontSize: "0.9rem",
+    color: "info.main",
+    textDecoration: "none",
+    transition: "color 0.2s",
+    "&:hover": {
+      color: "info.dark",
+    },
+  },
 };
 
 function Information() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [total, setTotal] = useState(25.0);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
-  const [isPaymentVisible, setIsPaymentVisible] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [pixPayload, setPixPayload] = useState("");
   const [formError, setFormError] = useState("");
-
-  // PIX configuration
-  const pixKey = "11115977660"; // Client's CPF as PIX key
-  const merchantName = "Pedro Jeha Vianna"; // Client's name, within 25-character limit
-  const merchantCity = "BELOHORIZONTE"; // Fixed to 13 characters, no space, uppercase
-
-  // Calculate CRC16-CCITT
-  const calculateCRC16 = (payload) => {
-    let crc = 0xffff;
-    for (let i = 0; i < payload.length; i++) {
-      crc ^= payload.charCodeAt(i) << 8;
-      for (let j = 0; j < 8; j++) {
-        crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
-        crc &= 0xffff;
-      }
-    }
-    return crc.toString(16).toUpperCase().padStart(4, "0");
-  };
-
-  // Generate PIX payload (corrected for standard EMV BR Code format)
-  const generatePixPayload = (amount, pixKey, merchantName, merchantCity) => {
-    const formattedAmount = amount.toFixed(2); // e.g., "25.00"
-    const gui = "br.gov.bcb.pix";
-    const guiField = `00${gui.length.toString().padStart(2, "0")}${gui}`;
-    const pixKeyField = `01${pixKey.length.toString().padStart(2, "0")}${pixKey}`;
-    const merchantAccountContent = guiField + pixKeyField;
-    const merchantAccountLen = merchantAccountContent.length.toString().padStart(2, "0");
-    const merchantAccount = `26${merchantAccountLen}${merchantAccountContent}`;
-    const merchantNameField = `59${merchantName.length.toString().padStart(2, "0")}${merchantName}`;
-    const merchantCityField = `60${merchantCity.length.toString().padStart(2, "0")}${merchantCity}`;
-    const amountField = `54${formattedAmount.length.toString().padStart(2, "0")}${formattedAmount}`;
-    const txid = `TXID${Date.now()}`.substring(0, 25); // Ensure txid is within 25 characters
-    const txidField = `05${txid.length.toString().padStart(2, "0")}${txid}`;
-    const additionalData = `62${txidField.length.toString().padStart(2, "0")}${txidField}`;
-
-    const payload = [
-      "000201", // Payload Format Indicator
-      merchantAccount, // Merchant Account Information (PIX key)
-      "52040000", // Merchant Category Code (generic)
-      "5303986", // Currency (BRL)
-      amountField, // Transaction Amount
-      "5802BR", // Country Code
-      merchantNameField, // Merchant Name
-      merchantCityField, // Merchant City
-      additionalData, // Additional Data Field (TXID)
-      "6304", // CRC16 placeholder
-    ].join("");
-
-    const crc = calculateCRC16(payload);
-    return payload + crc;
-  };
-
-  // Generate QR code when payment is initiated
-  useEffect(() => {
-    if (isPaymentVisible) {
-      const payload = generatePixPayload(total, pixKey, merchantName, merchantCity);
-      console.log("PIX Payload:", payload); // Debug log
-      setPixPayload(payload);
-      QRCode.toDataURL(payload, { width: 200, height: 200, margin: 2 }, (err, url) => {
-        if (!err) setQrCodeUrl(url);
-        else setFormError("Erro ao gerar o QR code. Tente novamente.");
-      });
-    }
-  }, [isPaymentVisible, total]);
 
   // Handle modal open
   const handleOpenModal = (e) => {
@@ -285,14 +165,6 @@ function Information() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     resetForm();
-  };
-
-  // Handle quantity change
-  const handleQuantityChange = (e) => {
-    const qty = parseInt(e.target.value);
-    setQuantity(qty);
-    setTotal(qty * 25);
-    setFormError("");
   };
 
   // Handle form input changes
@@ -333,8 +205,6 @@ function Information() {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          quantity,
-          total,
         }),
       });
 
@@ -343,7 +213,8 @@ function Information() {
         throw new Error(errorData.error || "Falha ao salvar os dados da compra");
       }
 
-      setIsPaymentVisible(true);
+      // Redirect to Mercado Pago payment link
+      window.location.href = "https://mpago.li/2rpx1BM";
     } catch (error) {
       console.error("Erro ao salvar os dados:", error);
       setFormError("Erro ao salvar os dados. Tente novamente.");
@@ -352,12 +223,7 @@ function Information() {
 
   // Reset form
   const resetForm = () => {
-    setQuantity(1);
-    setTotal(25.0);
     setFormData({ name: "", email: "", phone: "" });
-    setIsPaymentVisible(false);
-    setQrCodeUrl("");
-    setPixPayload("");
     setFormError("");
   };
 
@@ -476,6 +342,11 @@ function Information() {
                           <strong>Seleção Brasileira</strong>.
                         </>
                       }
+                      sx={{
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                      }}
                     />
                     <RotatingCardBack
                       image={bgBack}
@@ -486,6 +357,11 @@ function Information() {
                         route: "#",
                         label: "GARANTIR VAGA",
                         onClick: handleOpenModal,
+                      }}
+                      sx={{
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
                       }}
                     />
                   </RotatingCard>
@@ -686,7 +562,7 @@ function Information() {
                   <strong>📅 Data:</strong> 27 de setembro de 2025
                 </MKTypography>
                 <MKTypography variant="body2" sx={{ mb: 1 }}>
-                  <strong>🕗 Horário:</strong> Das 08h às 18h (com intervalo para almoço)
+                  <strong>🕗 Horário:</strong> Das 13h às 17h (com Coffee-break)
                 </MKTypography>
                 <MKTypography variant="body2" sx={{ mb: 1 }}>
                   <strong>🎟️ Vagas:</strong> Apenas 100 participantes, para garantir a qualidade da
@@ -776,6 +652,24 @@ function Information() {
               >
                 Quero Minha Vaga e o Bônus!
               </MKButton>
+              <MKBox sx={modalStyles.socialLinks}>
+                <MKTypography
+                  component="a"
+                  href="https://www.instagram.com/pedrojeha"
+                  target="_blank"
+                  sx={modalStyles.socialLink}
+                >
+                  @pedrojeha
+                </MKTypography>
+                <MKTypography
+                  component="a"
+                  href="https://www.instagram.com/rodrigosantiagopf"
+                  target="_blank"
+                  sx={modalStyles.socialLink}
+                >
+                  @rodrigosantiagopf
+                </MKTypography>
+              </MKBox>
             </MKBox>
           </Grid>
         </Grid>
@@ -797,31 +691,9 @@ function Information() {
                 color: "info.main",
               }}
             >
-              Compra de Ingressos
+              Cadastro para o Workshop
             </MKTypography>
-            <MKBox sx={modalStyles.form} display={isPaymentVisible ? "none" : "flex"}>
-              <MKTypography component="label" htmlFor="quantity" sx={modalStyles.label}>
-                Número de Ingressos (R$ 25,00 cada):
-              </MKTypography>
-              <MKBox
-                component="select"
-                id="quantity"
-                value={quantity}
-                onChange={handleQuantityChange}
-                sx={modalStyles.select}
-                required
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <option key={num} value={num}>
-                    {num}
-                  </option>
-                ))}
-              </MKBox>
-
-              <MKTypography sx={modalStyles.label}>
-                Total: R$ <span>{total.toFixed(2)}</span>
-              </MKTypography>
-
+            <MKBox sx={modalStyles.form}>
               <MKTypography component="label" htmlFor="name" sx={modalStyles.label}>
                 Nome:
               </MKTypography>
@@ -867,80 +739,10 @@ function Information() {
                 sx={modalStyles.button}
                 onClick={handleProceedPayment}
               >
-                Proceder ao Pagamento
+                Prosseguir para o Pagamento
               </MKButton>
 
               {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
-            </MKBox>
-
-            <MKBox
-              sx={
-                isPaymentVisible
-                  ? {
-                      ...modalStyles.paymentSection,
-                      ...modalStyles.paymentSectionVisible,
-                    }
-                  : modalStyles.paymentSection
-              }
-            >
-              <MKTypography
-                variant="h3"
-                sx={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontSize: "1.25rem",
-                  color: "info.main",
-                }}
-              >
-                Pagamento via PIX (Mercado Pago)
-              </MKTypography>
-              <MKTypography
-                variant="body2"
-                sx={{
-                  mt: 1,
-                  fontFamily: "'Poppins', sans-serif",
-                  color: "text.secondary",
-                }}
-              >
-                Escaneie o QR Code abaixo para pagar via PIX. Após o pagamento, você receberá uma
-                confirmação.
-              </MKTypography>
-              {qrCodeUrl && (
-                <MKBox sx={modalStyles.qrCodeContainer}>
-                  <MKBox
-                    component="img"
-                    src={qrCodeUrl}
-                    alt="PIX QR Code"
-                    sx={modalStyles.qrCode}
-                  />
-                </MKBox>
-              )}
-              <MKTypography sx={modalStyles.pixCopyPaste}>
-                <strong>PIX Copia e Cola:</strong> {pixPayload}
-              </MKTypography>
-              {formError && <MKTypography sx={modalStyles.errorMessage}>{formError}</MKTypography>}
-            </MKBox>
-
-            <MKBox
-              sx={
-                isPaymentVisible
-                  ? {
-                      ...modalStyles.successMessage,
-                      ...modalStyles.successMessageVisible,
-                    }
-                  : modalStyles.successMessage
-              }
-            >
-              <MKTypography
-                variant="body2"
-                sx={{
-                  fontFamily: "'Poppins', sans-serif",
-                  color: "black",
-                }}
-              >
-                Em até 24h entraremos em contato via e-mail cadastrado.
-                <br />
-                <strong>Obrigado por garantir sua vaga!</strong>
-              </MKTypography>
             </MKBox>
           </MKBox>
         </MKBox>
