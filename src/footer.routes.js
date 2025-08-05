@@ -1,8 +1,6 @@
 // @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import YouTubeIcon from "@mui/icons-material/YouTube";
+
 
 // Material Kit 2 React components
 import MKTypography from "components/MKTypography";
