@@ -12,12 +12,6 @@ export default {
   brand: {
     route: "/",
   },
-  socials: [
-    {
-      icon: <InstagramIcon />,
-      link: "https://www.instagram.com/pedrojeha",
-    },
-  ],
   menus: [
     {
       name: "Suporte",
